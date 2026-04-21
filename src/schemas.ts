@@ -45,7 +45,7 @@ export const PillDiscardSchema = z.object({
 
 export const PillFindSchema = z.object({
   query: z.string().min(1),
-  bottle_id: z.number().int().positive().optional(),
+  bottle_id: z.string().uuid().optional(),
   compound: z
     .enum([
       "decision",
@@ -63,7 +63,7 @@ export const PillFindSchema = z.object({
 });
 
 export const PillContextSchema = z.object({
-  bottle_id: z.number().int().positive(),
+  bottle_id: z.string().uuid(),
   prescription_limit: z.number().int().min(1).max(20).optional(),
   pill_limit: z.number().int().min(1).max(100).optional(),
 });
@@ -115,7 +115,7 @@ export const CapsuleFindSchema = z.object({
 // ─── Prescriptions ────────────────────────────────────────────────────────────
 
 export const PrescriptionOpenSchema = z.object({
-  bottle_id: z.number().int().positive(),
+  bottle_id: z.string().uuid(),
   title: z.string().min(1).max(300),
 });
 
