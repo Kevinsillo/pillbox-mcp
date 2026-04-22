@@ -3,8 +3,7 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { pillboxExec } from "../../exec.js";
-import { fromExecResult } from "../../response.js";
+import { execTool } from "../../response.js";
 import { BottleCreateSchema } from "../../schemas.js";
 
 export function registerAdminTools(server: McpServer): void {
@@ -16,7 +15,7 @@ export function registerAdminTools(server: McpServer): void {
         "Normalmente lo hace `pillbox bottle init`; esta tool existe para automatización.",
       inputSchema: BottleCreateSchema.shape,
     },
-    async (input) => fromExecResult(pillboxExec("bottle_create", input)),
+    async (input) => execTool("bottle_create", input),
   );
 
   server.registerTool(
@@ -25,7 +24,7 @@ export function registerAdminTools(server: McpServer): void {
       description: "Devuelve el listado de bottles con sus datos básicos.",
       inputSchema: {},
     },
-    async () => fromExecResult(pillboxExec("bottle_list", {})),
+    async () => execTool("bottle_list"),
   );
 
   server.registerTool(
@@ -36,7 +35,7 @@ export function registerAdminTools(server: McpServer): void {
         "Consultar antes de pill_take si no estás seguro de qué compound usar.",
       inputSchema: {},
     },
-    async () => fromExecResult(pillboxExec("pill_compounds", {})),
+    async () => execTool("pill_compounds"),
   );
 
   server.registerTool(
@@ -47,6 +46,6 @@ export function registerAdminTools(server: McpServer): void {
         "Consultar antes de capsule_take si no estás seguro de qué compound usar.",
       inputSchema: {},
     },
-    async () => fromExecResult(pillboxExec("capsule_compounds", {})),
+    async () => execTool("capsule_compounds"),
   );
 }

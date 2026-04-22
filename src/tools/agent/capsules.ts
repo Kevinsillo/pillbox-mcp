@@ -3,8 +3,7 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { pillboxExec } from "../../exec.js";
-import { fromExecResult } from "../../response.js";
+import { execTool } from "../../response.js";
 import {
   CapsuleTakeSchema,
   CapsuleReadSchema,
@@ -25,7 +24,7 @@ export function registerCapsuleTools(server: McpServer): void {
         "Para elegir compound, llamar capsule_compounds.",
       inputSchema: CapsuleTakeSchema.shape,
     },
-    async (input) => fromExecResult(pillboxExec("capsule_take", input)),
+    async (input) => execTool("capsule_take", input),
   );
 
   server.registerTool(
@@ -34,7 +33,7 @@ export function registerCapsuleTools(server: McpServer): void {
       description: "Lee el contenido completo de una capsule por su ID.",
       inputSchema: CapsuleReadSchema.shape,
     },
-    async (input) => fromExecResult(pillboxExec("capsule_read", input)),
+    async (input) => execTool("capsule_read", input),
   );
 
   server.registerTool(
@@ -43,7 +42,7 @@ export function registerCapsuleTools(server: McpServer): void {
       description: "Actualiza el título y/o contenido de una capsule existente.",
       inputSchema: CapsuleReviseSchema.shape,
     },
-    async (input) => fromExecResult(pillboxExec("capsule_revise", input)),
+    async (input) => execTool("capsule_revise", input),
   );
 
   server.registerTool(
@@ -52,7 +51,7 @@ export function registerCapsuleTools(server: McpServer): void {
       description: "Hace soft-delete de una capsule.",
       inputSchema: CapsuleDiscardSchema.shape,
     },
-    async (input) => fromExecResult(pillboxExec("capsule_discard", input)),
+    async (input) => execTool("capsule_discard", input),
   );
 
   server.registerTool(
@@ -63,6 +62,6 @@ export function registerCapsuleTools(server: McpServer): void {
         "Las capsules son globales — no se filtran por proyecto.",
       inputSchema: CapsuleFindSchema.shape,
     },
-    async (input) => fromExecResult(pillboxExec("capsule_search", input)),
+    async (input) => execTool("capsule_search", input),
   );
 }

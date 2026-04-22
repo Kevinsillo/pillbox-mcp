@@ -2,9 +2,12 @@
  * Helpers para construir respuestas MCP.
  *
  * El SDK espera { content: [{ type: "text", text: string }], isError?: boolean }
+ * El texto que ve el LLM es texto plano estructurado — nunca JSON crudo.
  */
 
+import { pillboxExec } from "./exec.js";
 import type { ExecResult } from "./exec.js";
+import { formatter } from "./formatter.js";
 
 export interface McpContent {
   type: "text";
@@ -17,24 +20,26 @@ export interface McpResponse {
   isError?: boolean;
 }
 
-export function mcpOk(data: unknown): McpResponse {
+export function fromExecResult(tool: string, result: ExecResult): McpResponse {
+  if (result.ok) {
+    return {
+      content: [{ type: "text", text: formatter.format(tool, result.data) }],
+    };
+  }
   return {
-    content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
-  };
-}
-
-export function mcpErr(error: string, message: string, data?: unknown): McpResponse {
-  const body: Record<string, unknown> = { error, message };
-  if (data !== undefined) body.data = data;
-  return {
-    content: [{ type: "text", text: JSON.stringify(body, null, 2) }],
+    content: [
+      {
+        type: "text",
+        text: formatter.formatError(result.error, result.message, result.data),
+      },
+    ],
     isError: true,
   };
 }
 
-export function fromExecResult(result: ExecResult): McpResponse {
-  if (result.ok) {
-    return mcpOk(result.data);
-  }
-  return mcpErr(result.error, result.message, result.data);
+export function execTool(
+  tool: string,
+  input: Record<string, unknown> = {},
+): McpResponse {
+  return fromExecResult(tool, pillboxExec(tool, input));
 }

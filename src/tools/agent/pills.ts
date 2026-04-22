@@ -3,8 +3,7 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { pillboxExec } from "../../exec.js";
-import { fromExecResult } from "../../response.js";
+import { execTool } from "../../response.js";
 import {
   PillTakeSchema,
   PillReadSchema,
@@ -26,7 +25,7 @@ export function registerPillTools(server: McpServer): void {
         "Para elegir compound, llamar pill_compounds.",
       inputSchema: PillTakeSchema.shape,
     },
-    async (input) => fromExecResult(pillboxExec("pill_take", input)),
+    async (input) => execTool("pill_take", input),
   );
 
   server.registerTool(
@@ -35,7 +34,7 @@ export function registerPillTools(server: McpServer): void {
       description: "Lee el contenido completo de una pill por su ID.",
       inputSchema: PillReadSchema.shape,
     },
-    async (input) => fromExecResult(pillboxExec("pill_read", input)),
+    async (input) => execTool("pill_read", input),
   );
 
   server.registerTool(
@@ -46,7 +45,7 @@ export function registerPillTools(server: McpServer): void {
         "Solo los campos presentes en `patch` se modifican.",
       inputSchema: PillReviseSchema.shape,
     },
-    async (input) => fromExecResult(pillboxExec("pill_revise", input)),
+    async (input) => execTool("pill_revise", input),
   );
 
   server.registerTool(
@@ -55,7 +54,7 @@ export function registerPillTools(server: McpServer): void {
       description: "Hace soft-delete de una pill. No se puede deshacer.",
       inputSchema: PillDiscardSchema.shape,
     },
-    async (input) => fromExecResult(pillboxExec("pill_discard", input)),
+    async (input) => execTool("pill_discard", input),
   );
 
   server.registerTool(
@@ -67,7 +66,7 @@ export function registerPillTools(server: McpServer): void {
         "Filtra opcionalmente por bottle_id o compound.",
       inputSchema: PillFindSchema.shape,
     },
-    async (input) => fromExecResult(pillboxExec("pill_search", input)),
+    async (input) => execTool("pill_search", input),
   );
 
   server.registerTool(
@@ -79,6 +78,6 @@ export function registerPillTools(server: McpServer): void {
         "Usar al inicio de una sesión para recuperar el estado del proyecto.",
       inputSchema: PillContextSchema.shape,
     },
-    async (input) => fromExecResult(pillboxExec("pill_context", input)),
+    async (input) => execTool("pill_context", input),
   );
 }
