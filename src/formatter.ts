@@ -25,6 +25,9 @@ interface Pill {
 interface PillTakeResult {
   id: number;
   action: string;
+  title: string;
+  compound: string;
+  content: string;
 }
 
 interface PillDiscardResult {
@@ -43,6 +46,9 @@ interface Capsule {
 interface CapsuleTakeResult {
   id: number;
   action: string;
+  title: string;
+  compound: string;
+  content: string;
 }
 
 interface CapsuleDiscardResult {
@@ -81,29 +87,15 @@ interface PillContextResult {
 
 // ─── Helpers de formateo ──────────────────────────────────────────────────────
 
-function prescription(d: Prescription, action?: string): string {
+function prescription(d: Prescription, includeId = false): string {
   const lines: string[] = [];
-  if (action) lines.push(action);
-  lines.push(`id: ${d.id}`);
+  if (includeId) lines.push(`id: ${d.id}`);
   lines.push(`title: ${d.title}`);
   lines.push(`started_at: ${d.started_at}`);
   if (d.ended_at) lines.push(`ended_at: ${d.ended_at}`);
   return lines.join("\n");
 }
 
-function pillFull(d: Pill, action?: string): string {
-  if (action) {
-    return `${action}\nid: ${d.id}\ncompound: ${d.compound}\ntitle: ${d.title}`;
-  }
-  return `# ${d.title} [${d.compound}]\nid: ${d.id} | prescription: ${d.prescription_id} | created: ${d.created_at.slice(0, 10)}\n\n${d.content}`;
-}
-
-function capsuleFull(d: Capsule, action?: string): string {
-  if (action) {
-    return `${action}\nid: ${d.id}\ncompound: ${d.compound}\ntitle: ${d.title}`;
-  }
-  return `# ${d.title} [${d.compound}]\nid: ${d.id} | created: ${d.created_at.slice(0, 10)}\n\n${d.content}`;
-}
 
 function searchResults(results: SearchResult[], entity: string): string {
   if (!results.length) return `No ${entity} found.`;
@@ -138,6 +130,10 @@ function compoundList(entries: CompoundEntry[]): string {
   return entries.map((e) => `${e.id}\n  ${e.description}\n  ${e.prompt_hint}`).join("\n\n");
 }
 
+function writeOutput(title: string, compound: string, content: string): string {
+  return `title: ${title}\ncompound: ${compound}\ncontent: ${content}`;
+}
+
 function generic(data: unknown, indent = ""): string {
   if (data === null || data === undefined) return "";
   if (typeof data !== "object") return String(data);
@@ -159,20 +155,26 @@ function generic(data: unknown, indent = ""): string {
 type Recipe = (data: unknown) => string;
 
 const recipes: Record<string, Recipe> = {
-  prescription_open: (d) => prescription(d as Prescription, "Prescription opened"),
-  prescription_close: (d) => prescription(d as Prescription, "Prescription closed"),
+  prescription_open: (d) => prescription(d as Prescription, true),
+  prescription_close: (d) => prescription(d as Prescription),
   prescription_read: (d) => prescription(d as Prescription),
   prescription_discard: () => "Prescription discarded.",
 
   pill_take: (d) => {
     const r = d as PillTakeResult;
-    return `Pill ${r.action}\nid: ${r.id}`;
+    return writeOutput(r.title, r.compound, r.content);
   },
-  pill_read: (d) => pillFull(d as Pill),
-  pill_revise: (d) => pillFull(d as Pill, "Pill updated"),
+  pill_read: (d) => {
+    const p = d as Pill;
+    return `id: ${p.id}\ntitle: ${p.title}\ncompound: ${p.compound}\ncontent: ${p.content}`;
+  },
+  pill_revise: (d) => {
+    const p = d as Pill;
+    return writeOutput(p.title, p.compound, p.content);
+  },
   pill_discard: (d) => {
     const r = d as PillDiscardResult;
-    return `Pill discarded\nid: ${r.id}\ndeleted_at: ${r.deleted_at}`;
+    return `id: ${r.id}\ndeleted_at: ${r.deleted_at}`;
   },
   pill_search: (d) => searchResults(d as SearchResult[], "pills"),
   pill_context: (d) => {
@@ -183,13 +185,19 @@ const recipes: Record<string, Recipe> = {
 
   capsule_take: (d) => {
     const r = d as CapsuleTakeResult;
-    return `Capsule ${r.action}\nid: ${r.id}`;
+    return writeOutput(r.title, r.compound, r.content);
   },
-  capsule_read: (d) => capsuleFull(d as Capsule),
-  capsule_revise: (d) => capsuleFull(d as Capsule, "Capsule updated"),
+  capsule_read: (d) => {
+    const c = d as Capsule;
+    return `id: ${c.id}\ntitle: ${c.title}\ncompound: ${c.compound}\ncontent: ${c.content}`;
+  },
+  capsule_revise: (d) => {
+    const c = d as Capsule;
+    return writeOutput(c.title, c.compound, c.content);
+  },
   capsule_discard: (d) => {
     const r = d as CapsuleDiscardResult;
-    return `Capsule discarded\nid: ${r.id}\ndeleted_at: ${r.deleted_at}`;
+    return `id: ${r.id}\ndeleted_at: ${r.deleted_at}`;
   },
   capsule_search: (d) => searchResults(d as SearchResult[], "capsules"),
   capsule_compounds: (d) => compoundList(d as CompoundEntry[]),
