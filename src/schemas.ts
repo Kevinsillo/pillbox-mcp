@@ -7,7 +7,7 @@ import { z } from "zod";
 
 // ─── Pills ────────────────────────────────────────────────────────────────────
 
-export const PillTakeSchema = z.object({
+export const PillStoreSchema = z.object({
   prescription_id: z.string().uuid(),
   compound: z.enum([
     "decision",
@@ -70,7 +70,7 @@ export const PillContextSchema = z.object({
 
 // ─── Capsules ─────────────────────────────────────────────────────────────────
 
-export const CapsuleTakeSchema = z.object({
+export const CapsuleStoreSchema = z.object({
   compound: z.enum([
     "convention",
     "workflow",

@@ -31,8 +31,8 @@ export function registerAdminTools(server: McpServer): void {
     "pill_compounds",
     {
       description:
-        "Devuelve los compounds disponibles para pill_take, con descripción y prompt_hint. " +
-        "Consultar antes de pill_take si no estás seguro de qué compound usar.",
+        "Devuelve los compounds disponibles para pill_store, con descripción y prompt_hint. " +
+        "Consultar antes de pill_store si no estás seguro de qué compound usar.",
       inputSchema: {},
     },
     async () => execTool("pill_compounds"),
@@ -42,8 +42,8 @@ export function registerAdminTools(server: McpServer): void {
     "capsule_compounds",
     {
       description:
-        "Devuelve los compounds disponibles para capsule_take, con descripción y prompt_hint. " +
-        "Consultar antes de capsule_take si no estás seguro de qué compound usar.",
+        "Devuelve los compounds disponibles para capsule_store, con descripción y prompt_hint. " +
+        "Consultar antes de capsule_store si no estás seguro de qué compound usar.",
       inputSchema: {},
     },
     async () => execTool("capsule_compounds"),

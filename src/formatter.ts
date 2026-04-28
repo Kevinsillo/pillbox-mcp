@@ -22,7 +22,7 @@ interface Pill {
   created_at: string;
 }
 
-interface PillTakeResult {
+interface PillStoreResult {
   id: number;
   action: string;
   title: string;
@@ -43,7 +43,7 @@ interface Capsule {
   created_at: string;
 }
 
-interface CapsuleTakeResult {
+interface CapsuleStoreResult {
   id: number;
   action: string;
   title: string;
@@ -160,8 +160,8 @@ const recipes: Record<string, Recipe> = {
   prescription_read: (d) => prescription(d as Prescription),
   prescription_discard: () => "Prescription discarded.",
 
-  pill_take: (d) => {
-    const r = d as PillTakeResult;
+  pill_store: (d) => {
+    const r = d as PillStoreResult;
     return writeOutput(r.title, r.compound, r.content);
   },
   pill_read: (d) => {
@@ -183,8 +183,8 @@ const recipes: Record<string, Recipe> = {
   },
   pill_compounds: (d) => compoundList(d as CompoundEntry[]),
 
-  capsule_take: (d) => {
-    const r = d as CapsuleTakeResult;
+  capsule_store: (d) => {
+    const r = d as CapsuleStoreResult;
     return writeOutput(r.title, r.compound, r.content);
   },
   capsule_read: (d) => {

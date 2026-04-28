@@ -5,7 +5,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { execTool } from "../../response.js";
 import {
-  CapsuleTakeSchema,
+  CapsuleStoreSchema,
   CapsuleReadSchema,
   CapsuleReviseSchema,
   CapsuleDiscardSchema,
@@ -14,17 +14,17 @@ import {
 
 export function registerCapsuleTools(server: McpServer): void {
   server.registerTool(
-    "capsule_take",
+    "capsule_store",
     {
       description:
         "Guarda conocimiento personal del usuario (preferencias, convenciones, workflow). " +
-        "Usar en lugar de pill_take cuando el conocimiento NO pertenece a un proyecto específico — " +
+        "Usar en lugar de pill_store cuando el conocimiento NO pertenece a un proyecto específico — " +
         "cross-proyecto, sin prescription activa. " +
         "Ejemplos: estilo de código preferido, herramientas del entorno, forma de trabajar. " +
         "Para elegir compound, llamar capsule_compounds.",
-      inputSchema: CapsuleTakeSchema.shape,
+      inputSchema: CapsuleStoreSchema.shape,
     },
-    async (input) => execTool("capsule_take", input),
+    async (input) => execTool("capsule_store", input),
   );
 
   server.registerTool(

@@ -5,7 +5,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { execTool } from "../../response.js";
 import {
-  PillTakeSchema,
+  PillStoreSchema,
   PillReadSchema,
   PillReviseSchema,
   PillDiscardSchema,
@@ -15,17 +15,17 @@ import {
 
 export function registerPillTools(server: McpServer): void {
   server.registerTool(
-    "pill_take",
+    "pill_store",
     {
       description:
         "Guarda conocimiento específico del proyecto en una prescripción abierta. " +
-        "Usar en lugar de capsule_take cuando el conocimiento pertenece a este proyecto concreto — " +
+        "Usar en lugar de capsule_store cuando el conocimiento pertenece a este proyecto concreto — " +
         "requiere prescription_id activa. " +
         "Ejemplos: decisiones de arquitectura, bugs corregidos, patrones del código. " +
         "Para elegir compound, llamar pill_compounds.",
-      inputSchema: PillTakeSchema.shape,
+      inputSchema: PillStoreSchema.shape,
     },
-    async (input) => execTool("pill_take", input),
+    async (input) => execTool("pill_store", input),
   );
 
   server.registerTool(
