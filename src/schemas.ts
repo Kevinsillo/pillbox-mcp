@@ -21,10 +21,7 @@ export const PillStoreSchema = z.object({
     "manual",
   ]),
   title: z.string().min(1).max(200),
-  content: z.string().min(1),
-  dispenser: z.string().max(100).optional(),
-  author_name: z.string().max(100).optional(),
-  author_email: z.string().max(200).optional(),
+  content: z.string().min(1).max(5000),
 });
 
 export const PillReadSchema = z.object({
@@ -81,8 +78,7 @@ export const CapsuleStoreSchema = z.object({
     "manual",
   ]),
   title: z.string().min(1).max(200),
-  content: z.string().min(1),
-  dispenser: z.string().max(100).optional(),
+  content: z.string().min(1).max(5000),
 });
 
 export const CapsuleReadSchema = z.object({
