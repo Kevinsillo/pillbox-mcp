@@ -11,6 +11,8 @@ interface Prescription {
   title: string;
   started_at: string;
   ended_at?: string | null;
+  author_name: string | null;
+  author_email: string | null;
 }
 
 interface Pill {
@@ -19,6 +21,8 @@ interface Pill {
   title: string;
   content: string;
   prescription_id: string;
+  author_name: string | null;
+  author_email: string | null;
   created_at: string;
 }
 
@@ -87,12 +91,21 @@ interface PillContextResult {
 
 // ─── Helpers de formateo ──────────────────────────────────────────────────────
 
+function formatAuthor(name: string | null, email: string | null): string | null {
+  if (name && email) return `${name} <${email}>`;
+  if (name) return name;
+  if (email) return email;
+  return null;
+}
+
 function prescription(d: Prescription, includeId = false): string {
   const lines: string[] = [];
   if (includeId) lines.push(`id: ${d.id}`);
   lines.push(`title: ${d.title}`);
   lines.push(`started_at: ${d.started_at}`);
   if (d.ended_at) lines.push(`ended_at: ${d.ended_at}`);
+  const author = formatAuthor(d.author_name, d.author_email);
+  if (author) lines.push(`author: ${author}`);
   return lines.join("\n");
 }
 
@@ -166,7 +179,15 @@ const recipes: Record<string, Recipe> = {
   },
   pill_read: (d) => {
     const p = d as Pill;
-    return `id: ${p.id}\ntitle: ${p.title}\ncompound: ${p.compound}\ncontent: ${p.content}`;
+    const lines = [
+      `id: ${p.id}`,
+      `title: ${p.title}`,
+      `compound: ${p.compound}`,
+    ];
+    const author = formatAuthor(p.author_name, p.author_email);
+    if (author) lines.push(`author: ${author}`);
+    lines.push(`content: ${p.content}`);
+    return lines.join("\n");
   },
   pill_revise: (d) => {
     const p = d as Pill;
