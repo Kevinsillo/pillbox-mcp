@@ -159,3 +159,13 @@ export const BottleCreateSchema = z.object({
   directory: z.string().min(1),
   scope: z.enum(["local", "global"]),
 });
+
+export const BottleVinculateSchema = z.object({
+  directory: z
+    .string()
+    .min(1)
+    .optional()
+    .describe(
+      "Absolute path to directory containing .pillbox/pillbox.db. Defaults to cwd of the pillbox process.",
+    ),
+});

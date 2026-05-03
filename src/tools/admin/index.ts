@@ -1,10 +1,10 @@
 /**
- * Tools de administración: stats y bottle_create.
+ * Tools de administración: bottle_create y compounds.
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { execTool } from "../../response.js";
-import { BottleCreateSchema } from "../../schemas.js";
+import { BottleCreateSchema, BottleVinculateSchema } from "../../schemas.js";
 
 export function registerAdminTools(server: McpServer): void {
   server.registerTool(
@@ -19,12 +19,15 @@ export function registerAdminTools(server: McpServer): void {
   );
 
   server.registerTool(
-    "stats",
+    "bottle_vinculate",
     {
-      description: "Devuelve el listado de bottles con sus datos básicos.",
-      inputSchema: {},
+      description:
+        "Link a local .pillbox database to the calling user's global registry. " +
+        "Use when a second user needs to access a bottle created by another user on the same machine. " +
+        "Idempotent: returns status='already_linked' if already registered. directory defaults to cwd.",
+      inputSchema: BottleVinculateSchema.shape,
     },
-    async () => execTool("bottle_list"),
+    async (input) => execTool("bottle_vinculate", input),
   );
 
   server.registerTool(
