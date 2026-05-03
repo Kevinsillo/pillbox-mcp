@@ -143,8 +143,9 @@ function compoundList(entries: CompoundEntry[]): string {
   return entries.map((e) => `${e.id}\n  ${e.description}\n  ${e.prompt_hint}`).join("\n\n");
 }
 
-function writeOutput(title: string, compound: string, content: string): string {
-  return `title: ${title}\ncompound: ${compound}\ncontent: ${content}`;
+function writeOutput(title: string, compound: string, content: string, id?: number): string {
+  const idLine = id !== undefined ? `id: ${id}\n` : "";
+  return `${idLine}title: ${title}\ncompound: ${compound}\ncontent: ${content}`;
 }
 
 function generic(data: unknown, indent = ""): string {
@@ -175,7 +176,7 @@ const recipes: Record<string, Recipe> = {
 
   pill_store: (d) => {
     const r = d as PillStoreResult;
-    return writeOutput(r.title, r.compound, r.content);
+    return writeOutput(r.title, r.compound, r.content, r.id);
   },
   pill_read: (d) => {
     const p = d as Pill;
@@ -191,7 +192,7 @@ const recipes: Record<string, Recipe> = {
   },
   pill_revise: (d) => {
     const p = d as Pill;
-    return writeOutput(p.title, p.compound, p.content);
+    return writeOutput(p.title, p.compound, p.content, p.id);
   },
   pill_discard: (d) => {
     const r = d as PillDiscardResult;
@@ -206,7 +207,7 @@ const recipes: Record<string, Recipe> = {
 
   capsule_store: (d) => {
     const r = d as CapsuleStoreResult;
-    return writeOutput(r.title, r.compound, r.content);
+    return writeOutput(r.title, r.compound, r.content, r.id);
   },
   capsule_read: (d) => {
     const c = d as Capsule;
@@ -214,7 +215,7 @@ const recipes: Record<string, Recipe> = {
   },
   capsule_revise: (d) => {
     const c = d as Capsule;
-    return writeOutput(c.title, c.compound, c.content);
+    return writeOutput(c.title, c.compound, c.content, c.id);
   },
   capsule_discard: (d) => {
     const r = d as CapsuleDiscardResult;
