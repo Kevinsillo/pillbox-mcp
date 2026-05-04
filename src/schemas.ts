@@ -52,10 +52,21 @@ export const PillReadSchema = z.object({
 
 export const PillReviseSchema = z.object({
   id: z.number().int().positive(),
-  patch: z.object({
-    title: z.string().min(1).max(200).optional(),
-    content: z.string().min(1).optional(),
-  }),
+  title: z.string().min(1).max(200).optional(),
+  content: z.string().min(1).optional(),
+  compound: z
+    .enum([
+      "decision",
+      "architecture",
+      "bugfix",
+      "pattern",
+      "discovery",
+      "learning",
+      "feedback",
+      "prescription_summary",
+      "manual",
+    ])
+    .optional(),
 });
 
 export const PillDiscardSchema = z.object({
@@ -109,13 +120,11 @@ export const CapsuleReadSchema = z.object({
 
 export const CapsuleReviseSchema = z.object({
   id: z.number().int().positive(),
-  patch: z.object({
-    title: z.string().min(1).max(200).optional(),
-    content: z.string().min(1).optional(),
-    compound: z
-      .enum(["convention", "workflow", "environment", "context", "goal", "feedback", "manual"])
-      .optional(),
-  }),
+  title: z.string().min(1).max(200).optional(),
+  content: z.string().min(1).optional(),
+  compound: z
+    .enum(["convention", "workflow", "environment", "context", "goal", "feedback", "manual"])
+    .optional(),
 });
 
 export const CapsuleDiscardSchema = z.object({

@@ -34,7 +34,6 @@ check: typecheck fmt-check
 ## Compila e instala el MCP en ~/.pillbox/mcp/
 install: build
 	mkdir -p $${HOME}/.pillbox/mcp
-	cp -r dist/ $${HOME}/.pillbox/mcp/dist
-	cp package.json $${HOME}/.pillbox/mcp/
-	cd $${HOME}/.pillbox/mcp && npm install --production --silent
+	cp dist/index.js $${HOME}/.pillbox/mcp/index.js
+	cp dist/index.js.map $${HOME}/.pillbox/mcp/index.js.map
 	@echo "✓ MCP instalado en ~/.pillbox/mcp/"
