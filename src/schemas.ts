@@ -6,24 +6,22 @@
 import { z } from "zod";
 
 // ─── Author (compartido) ──────────────────────────────────────────────────────
-// Identidad del usuario humano detrás del agente. Resolución en 3 pasos
-// (responsabilidad del cliente MCP/agente, no del servidor):
-//   (1) git config user.name / user.email del repo o entorno actual.
-//   (2) Si falla: leer ~/.pillbox/identity.json (campos `name` y `email`).
-//   (3) Si sigue sin valor: preguntar al usuario y persistir la respuesta en
-//       ~/.pillbox/identity.json para futuras invocaciones.
+// Campos obligatorios. Resolución (responsabilidad del agente):
+//   (1) Leer ~/.pillbox/identity.json (campos `name` y `email`).
+//   (2) Si no existe: obtener de git config y persistir en identity.json.
+//   (3) Si git config falla: preguntar al usuario y persistir en identity.json.
 
 export const AUTHOR_NAME_DESC =
   "Nombre del autor humano detrás del agente. Resolución en 3 pasos: " +
-  "(1) leer `git config user.name` del repo/entorno actual; " +
-  "(2) si falla, leer el campo `name` de ~/.pillbox/identity.json; " +
-  "(3) si sigue vacío, preguntar al usuario y persistirlo en ese mismo fichero.";
+  "(1) leer el campo `name` de ~/.pillbox/identity.json; " +
+  "(2) si no existe, obtener de `git config user.name` y persistirlo en ese fichero; " +
+  "(3) si git config falla, preguntar al usuario y persistirlo en ese fichero.";
 
 export const AUTHOR_EMAIL_DESC =
   "Email del autor humano detrás del agente. Resolución en 3 pasos: " +
-  "(1) leer `git config user.email` del repo/entorno actual; " +
-  "(2) si falla, leer el campo `email` de ~/.pillbox/identity.json; " +
-  "(3) si sigue vacío, preguntar al usuario y persistirlo en ese mismo fichero.";
+  "(1) leer el campo `email` de ~/.pillbox/identity.json; " +
+  "(2) si no existe, obtener de `git config user.email` y persistirlo en ese fichero; " +
+  "(3) si git config falla, preguntar al usuario y persistirlo en ese fichero.";
 
 // ─── Pills ────────────────────────────────────────────────────────────────────
 
@@ -41,9 +39,9 @@ export const PillStoreSchema = z.object({
     "manual",
   ]),
   title: z.string().min(1).max(200),
-  content: z.string().min(1).max(5000),
-  author_name: z.string().min(1).max(200).optional().describe(AUTHOR_NAME_DESC),
-  author_email: z.string().min(1).max(200).optional().describe(AUTHOR_EMAIL_DESC),
+  content: z.string().min(1).max(5000).describe("Máximo 5000 caracteres."),
+  author_name: z.string().min(1).max(200).describe(AUTHOR_NAME_DESC),
+  author_email: z.string().min(1).max(200).describe(AUTHOR_EMAIL_DESC),
 });
 
 export const PillReadSchema = z.object({
@@ -92,10 +90,14 @@ export const PillFindSchema = z.object({
   limit: z.number().int().min(1).max(100).optional(),
 });
 
-export const PillContextSchema = z.object({
+export const BottleContextSchema = z.object({
   bottle_id: z.string().uuid(),
-  prescription_limit: z.number().int().min(1).max(20).optional(),
-  pill_limit: z.number().int().min(1).max(100).optional(),
+  limit: z.number().int().min(1).max(100).optional(),
+});
+
+export const PrescriptionContextSchema = z.object({
+  prescription_id: z.string().uuid(),
+  limit: z.number().int().min(1).max(100).optional(),
 });
 
 // ─── Capsules ─────────────────────────────────────────────────────────────────
@@ -111,7 +113,7 @@ export const CapsuleStoreSchema = z.object({
     "manual",
   ]),
   title: z.string().min(1).max(200),
-  content: z.string().min(1).max(5000),
+  content: z.string().min(1).max(5000).describe("Máximo 5000 caracteres."),
 });
 
 export const CapsuleReadSchema = z.object({
@@ -144,8 +146,8 @@ export const CapsuleFindSchema = z.object({
 export const PrescriptionOpenSchema = z.object({
   bottle_id: z.string().uuid(),
   title: z.string().min(1).max(300),
-  author_name: z.string().min(1).max(200).optional().describe(AUTHOR_NAME_DESC),
-  author_email: z.string().min(1).max(200).optional().describe(AUTHOR_EMAIL_DESC),
+  author_name: z.string().min(1).max(200).describe(AUTHOR_NAME_DESC),
+  author_email: z.string().min(1).max(200).describe(AUTHOR_EMAIL_DESC),
 });
 
 export const PrescriptionCloseSchema = z.object({

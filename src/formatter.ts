@@ -83,7 +83,7 @@ interface CompoundEntry {
   prompt_hint: string;
 }
 
-interface PillContextResult {
+interface ContextResult {
   context: string;
   prescription_count: number;
   pill_count: number;
@@ -199,9 +199,13 @@ const recipes: Record<string, Recipe> = {
     return `id: ${r.id}\ndeleted_at: ${r.deleted_at}`;
   },
   pill_search: (d) => searchResults(d as SearchResult[], "pills"),
-  pill_context: (d) => {
-    const ctx = d as PillContextResult;
-    return `${ctx.context}\n---\nprescriptions: ${ctx.prescription_count} | pills: ${ctx.pill_count}`;
+  bottle_context: (d) => {
+    const ctx = d as ContextResult;
+    return `${ctx.context}---\nprescriptions: ${ctx.prescription_count}`;
+  },
+  prescription_context: (d) => {
+    const ctx = d as ContextResult;
+    return `${ctx.context}\n---\npills: ${ctx.pill_count}`;
   },
   pill_compounds: (d) => compoundList(d as CompoundEntry[]),
 

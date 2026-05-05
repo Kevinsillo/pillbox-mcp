@@ -10,7 +10,8 @@ import {
   PillReviseSchema,
   PillDiscardSchema,
   PillFindSchema,
-  PillContextSchema,
+  BottleContextSchema,
+  PrescriptionContextSchema,
 } from "../../schemas.js";
 
 export function registerPillTools(server: McpServer): void {
@@ -41,8 +42,8 @@ export function registerPillTools(server: McpServer): void {
     "pill_revise",
     {
       description:
-        "Actualiza el título y/o contenido de una pill existente. " +
-        "Solo los campos presentes en `patch` se modifican.",
+        "Actualiza el título, contenido y/o compound de una pill existente. " +
+        "Solo los campos proporcionados se modifican.",
       inputSchema: PillReviseSchema.shape,
     },
     async (input) => execTool("pill_revise", input),
@@ -70,14 +71,26 @@ export function registerPillTools(server: McpServer): void {
   );
 
   server.registerTool(
-    "pill_context",
+    "bottle_context",
     {
       description:
-        "Obtiene el contexto reciente de un bottle en formato Markdown: " +
-        "prescripciones recientes y sus pills. " +
-        "Usar al inicio de una sesión para recuperar el estado del proyecto.",
-      inputSchema: PillContextSchema.shape,
+        "Índice navegable de prescriptions de un bottle: id, título, estado, fechas y pill_count. " +
+        "Usar al inicio de una sesión para ver qué sesiones de trabajo existen. " +
+        "Para ver las pills de una prescription concreta, usar prescription_context con su id.",
+      inputSchema: BottleContextSchema.shape,
     },
-    async (input) => execTool("pill_context", input),
+    async (input) => execTool("bottle_context", input),
+  );
+
+  server.registerTool(
+    "prescription_context",
+    {
+      description:
+        "Pills de una prescription concreta con id, compound, título y snippet de 300 chars. " +
+        "Usar tras bottle_context para profundizar en una sesión de trabajo específica. " +
+        "Para el contenido completo de una pill individual, usar pill_read.",
+      inputSchema: PrescriptionContextSchema.shape,
+    },
+    async (input) => execTool("prescription_context", input),
   );
 }
