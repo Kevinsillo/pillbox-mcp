@@ -3,91 +3,19 @@
  * listo para consumir por el LLM.
  */
 
-// ─── Tipos de dominio (espejo de los structs Rust) ────────────────────────────
-
-interface Prescription {
-  id: string;
-  bottle_id: string;
-  title: string;
-  started_at: string;
-  ended_at?: string | null;
-  author_name: string | null;
-  author_email: string | null;
-}
-
-interface Pill {
-  id: number;
-  compound: string;
-  title: string;
-  content: string;
-  prescription_id: string;
-  author_name: string | null;
-  author_email: string | null;
-  created_at: string;
-}
-
-interface PillStoreResult {
-  id: number;
-  action: string;
-  title: string;
-  compound: string;
-  content: string;
-}
-
-interface PillDiscardResult {
-  id: number;
-  deleted_at: string;
-}
-
-interface Capsule {
-  id: number;
-  compound: string;
-  title: string;
-  content: string;
-  created_at: string;
-}
-
-interface CapsuleStoreResult {
-  id: number;
-  action: string;
-  title: string;
-  compound: string;
-  content: string;
-}
-
-interface CapsuleDiscardResult {
-  id: number;
-  deleted_at: string;
-}
-
-interface SearchResult {
-  id: number;
-  compound: string;
-  title: string;
-  snippet: string;
-  prescription_id?: string;
-}
-
-interface Bottle {
-  id: string;
-  name: string;
-  display_name: string;
-  directory: string;
-  scope: string;
-  linked: boolean;
-}
-
-interface CompoundEntry {
-  id: string;
-  description: string;
-  prompt_hint: string;
-}
-
-interface ContextResult {
-  context: string;
-  prescription_count: number;
-  pill_count: number;
-}
+import type {
+  Prescription,
+  Pill,
+  PillStoreResult,
+  PillDiscardResult,
+  Capsule,
+  CapsuleStoreResult,
+  CapsuleDiscardResult,
+  SearchResult,
+  Bottle,
+  CompoundEntry,
+  ContextResult,
+} from "./types.js";
 
 // ─── Helpers de formateo ──────────────────────────────────────────────────────
 

@@ -19,9 +19,9 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
 import { registerPrescriptionTools } from "./tools/prescription.js";
-import { registerPillTools } from "./tools/agent/pills.js";
-import { registerCapsuleTools } from "./tools/agent/capsules.js";
-import { registerAdminTools } from "./tools/admin/index.js";
+import { registerPillTools } from "./tools/pills.js";
+import { registerCapsuleTools } from "./tools/capsules.js";
+import { registerBottleTools } from "./tools/bottles.js";
 
 const server = new McpServer({
   name: "pillbox",
@@ -31,7 +31,7 @@ const server = new McpServer({
 registerPrescriptionTools(server);
 registerPillTools(server);
 registerCapsuleTools(server);
-registerAdminTools(server);
+registerBottleTools(server);
 
 const transport = new StdioServerTransport();
 await server.connect(transport);

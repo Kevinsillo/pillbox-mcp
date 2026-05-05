@@ -3,16 +3,14 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { execTool } from "../../response.js";
+import { execTool } from "../dispatch.js";
 import {
   PillStoreSchema,
   PillReadSchema,
   PillReviseSchema,
   PillDiscardSchema,
   PillFindSchema,
-  BottleContextSchema,
-  PrescriptionContextSchema,
-} from "../../schemas.js";
+} from "../schemas.js";
 
 export function registerPillTools(server: McpServer): void {
   server.registerTool(
@@ -71,26 +69,13 @@ export function registerPillTools(server: McpServer): void {
   );
 
   server.registerTool(
-    "bottle_context",
+    "pill_compounds",
     {
       description:
-        "Índice navegable de prescriptions de un bottle: id, título, estado, fechas y pill_count. " +
-        "Usar al inicio de una sesión para ver qué sesiones de trabajo existen. " +
-        "Para ver las pills de una prescription concreta, usar prescription_context con su id.",
-      inputSchema: BottleContextSchema.shape,
+        "Devuelve los compounds disponibles para pill_store, con descripción y prompt_hint. " +
+        "Consultar antes de pill_store si no estás seguro de qué compound usar.",
+      inputSchema: {},
     },
-    async (input) => execTool("bottle_context", input),
-  );
-
-  server.registerTool(
-    "prescription_context",
-    {
-      description:
-        "Pills de una prescription concreta con id, compound, título y snippet de 300 chars. " +
-        "Usar tras bottle_context para profundizar en una sesión de trabajo específica. " +
-        "Para el contenido completo de una pill individual, usar pill_read.",
-      inputSchema: PrescriptionContextSchema.shape,
-    },
-    async (input) => execTool("prescription_context", input),
+    async () => execTool("pill_compounds"),
   );
 }

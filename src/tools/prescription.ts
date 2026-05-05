@@ -1,14 +1,15 @@
 /**
- * Tools de gestión de prescripciones (sesiones de trabajo).
+ * Tools de gestión de prescripciones (sesiones de trabajo) y contexto de navegación.
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { execTool } from "../response.js";
+import { execTool } from "../dispatch.js";
 import {
   PrescriptionOpenSchema,
   PrescriptionCloseSchema,
   PrescriptionReadSchema,
   PrescriptionDiscardSchema,
+  PrescriptionContextSchema,
 } from "../schemas.js";
 
 export function registerPrescriptionTools(server: McpServer): void {
@@ -52,11 +53,14 @@ export function registerPrescriptionTools(server: McpServer): void {
   );
 
   server.registerTool(
-    "bottle_list",
+    "prescription_context",
     {
-      description: "Lista todos los bottles (proyectos) registrados en Pillbox.",
-      inputSchema: {},
+      description:
+        "Pills de una prescription concreta con id, compound, título y snippet de 300 chars. " +
+        "Usar tras bottle_context para profundizar en una sesión de trabajo específica. " +
+        "Para el contenido completo de una pill individual, usar pill_read.",
+      inputSchema: PrescriptionContextSchema.shape,
     },
-    async () => execTool("bottle_list"),
+    async (input) => execTool("prescription_context", input),
   );
 }

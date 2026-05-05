@@ -3,14 +3,14 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { execTool } from "../../response.js";
+import { execTool } from "../dispatch.js";
 import {
   CapsuleStoreSchema,
   CapsuleReadSchema,
   CapsuleReviseSchema,
   CapsuleDiscardSchema,
   CapsuleFindSchema,
-} from "../../schemas.js";
+} from "../schemas.js";
 
 export function registerCapsuleTools(server: McpServer): void {
   server.registerTool(
@@ -63,5 +63,16 @@ export function registerCapsuleTools(server: McpServer): void {
       inputSchema: CapsuleFindSchema.shape,
     },
     async (input) => execTool("capsule_search", input),
+  );
+
+  server.registerTool(
+    "capsule_compounds",
+    {
+      description:
+        "Devuelve los compounds disponibles para capsule_store, con descripción y prompt_hint. " +
+        "Consultar antes de capsule_store si no estás seguro de qué compound usar.",
+      inputSchema: {},
+    },
+    async () => execTool("capsule_compounds"),
   );
 }

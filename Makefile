@@ -35,5 +35,4 @@ check: typecheck fmt-check
 install: build
 	mkdir -p $${HOME}/.pillbox/mcp
 	cp dist/index.js $${HOME}/.pillbox/mcp/index.js
-	cp dist/index.js.map $${HOME}/.pillbox/mcp/index.js.map
 	@echo "✓ MCP instalado en ~/.pillbox/mcp/"
