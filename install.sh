@@ -13,19 +13,28 @@ if ! command -v node &>/dev/null; then
   exit 1
 fi
 
-if ! command -v pnpm &>/dev/null; then
-  echo "Error: pnpm not found. Install it with: npm install -g pnpm"
+PKG_MANAGER=""
+for pm in pnpm bun npm; do
+  if command -v "$pm" &>/dev/null; then
+    PKG_MANAGER="$pm"
+    break
+  fi
+done
+
+if [ -z "$PKG_MANAGER" ]; then
+  echo "Error: no package manager found. Install pnpm, bun or npm and try again."
   exit 1
 fi
 
 echo "=== Pillbox MCP install ==="
+echo "Package manager: $PKG_MANAGER"
 echo ""
 
 # Build
 echo "Building..."
 cd "$SCRIPT_DIR"
-pnpm install --frozen-lockfile
-pnpm build
+"$PKG_MANAGER" install
+"$PKG_MANAGER" run build
 
 # Install
 echo "Installing to $DEST..."
