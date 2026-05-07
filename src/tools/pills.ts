@@ -21,7 +21,7 @@ export function registerPillTools(server: McpServer): void {
         "Usar en lugar de capsule_store cuando el conocimiento pertenece a este proyecto concreto — " +
         "requiere prescription_id activa. " +
         "Ejemplos: decisiones de arquitectura, bugs corregidos, patrones del código. " +
-        "Para elegir compound, llamar pill_compounds.",
+        "El campo compound es texto libre — consultar el skill para los valores convencionales.",
       inputSchema: PillStoreSchema.shape,
     },
     async (input) => execTool("pill_store", input),
@@ -68,14 +68,4 @@ export function registerPillTools(server: McpServer): void {
     async (input) => execTool("pill_search", input),
   );
 
-  server.registerTool(
-    "pill_compounds",
-    {
-      description:
-        "Devuelve los compounds disponibles para pill_store, con descripción y prompt_hint. " +
-        "Consultar antes de pill_store si no estás seguro de qué compound usar.",
-      inputSchema: {},
-    },
-    async () => execTool("pill_compounds"),
-  );
 }

@@ -21,7 +21,7 @@ export function registerCapsuleTools(server: McpServer): void {
         "Usar en lugar de pill_store cuando el conocimiento NO pertenece a un proyecto específico — " +
         "cross-proyecto, sin prescription activa. " +
         "Ejemplos: estilo de código preferido, herramientas del entorno, forma de trabajar. " +
-        "Para elegir compound, llamar capsule_compounds.",
+        "El campo compound es texto libre — consultar el skill para los valores convencionales.",
       inputSchema: CapsuleStoreSchema.shape,
     },
     async (input) => execTool("capsule_store", input),
@@ -65,14 +65,4 @@ export function registerCapsuleTools(server: McpServer): void {
     async (input) => execTool("capsule_search", input),
   );
 
-  server.registerTool(
-    "capsule_compounds",
-    {
-      description:
-        "Devuelve los compounds disponibles para capsule_store, con descripción y prompt_hint. " +
-        "Consultar antes de capsule_store si no estás seguro de qué compound usar.",
-      inputSchema: {},
-    },
-    async () => execTool("capsule_compounds"),
-  );
 }

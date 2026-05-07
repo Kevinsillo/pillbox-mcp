@@ -27,17 +27,7 @@ export const AUTHOR_EMAIL_DESC =
 
 export const PillStoreSchema = z.object({
   prescription_id: z.string().uuid(),
-  compound: z.enum([
-    "decision",
-    "architecture",
-    "bugfix",
-    "specification",
-    "discovery",
-    "learning",
-    "feedback",
-    "summary",
-    "task",
-  ]),
+  compound: z.string().min(1).max(64),
   title: z.string().min(1).max(200),
   content: z.string().min(1).max(5000).describe("Máximo 5000 caracteres."),
   author_name: z.string().min(1).max(200).describe(AUTHOR_NAME_DESC),
@@ -52,19 +42,7 @@ export const PillReviseSchema = z.object({
   id: z.number().int().positive(),
   title: z.string().min(1).max(200).optional(),
   content: z.string().min(1).optional(),
-  compound: z
-    .enum([
-      "decision",
-      "architecture",
-      "bugfix",
-      "specification",
-      "discovery",
-      "learning",
-      "feedback",
-      "summary",
-      "task",
-    ])
-    .optional(),
+  compound: z.string().min(1).max(64).optional(),
 });
 
 export const PillDiscardSchema = z.object({
@@ -74,19 +52,7 @@ export const PillDiscardSchema = z.object({
 export const PillFindSchema = z.object({
   query: z.string().min(1),
   bottle_id: z.string().uuid().optional(),
-  compound: z
-    .enum([
-      "decision",
-      "architecture",
-      "bugfix",
-      "specification",
-      "discovery",
-      "learning",
-      "feedback",
-      "summary",
-      "task",
-    ])
-    .optional(),
+  compound: z.string().min(1).max(64).optional(),
   limit: z.number().int().min(1).max(100).optional(),
 });
 
@@ -103,15 +69,7 @@ export const PrescriptionContextSchema = z.object({
 // ─── Capsules ─────────────────────────────────────────────────────────────────
 
 export const CapsuleStoreSchema = z.object({
-  compound: z.enum([
-    "convention",
-    "workflow",
-    "environment",
-    "context",
-    "goal",
-    "feedback",
-    "manual",
-  ]),
+  compound: z.string().min(1).max(64),
   title: z.string().min(1).max(200),
   content: z.string().min(1).max(5000).describe("Máximo 5000 caracteres."),
 });
@@ -124,9 +82,7 @@ export const CapsuleReviseSchema = z.object({
   id: z.number().int().positive(),
   title: z.string().min(1).max(200).optional(),
   content: z.string().min(1).optional(),
-  compound: z
-    .enum(["convention", "workflow", "environment", "context", "goal", "feedback", "manual"])
-    .optional(),
+  compound: z.string().min(1).max(64).optional(),
 });
 
 export const CapsuleDiscardSchema = z.object({
@@ -135,9 +91,7 @@ export const CapsuleDiscardSchema = z.object({
 
 export const CapsuleFindSchema = z.object({
   query: z.string().min(1),
-  compound: z
-    .enum(["convention", "workflow", "environment", "context", "goal", "feedback", "manual"])
-    .optional(),
+  compound: z.string().min(1).max(64).optional(),
   limit: z.number().int().min(1).max(100).optional(),
 });
 
