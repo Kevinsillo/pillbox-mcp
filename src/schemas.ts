@@ -35,7 +35,7 @@ export const PillStoreSchema = z.object({
     "discovery",
     "learning",
     "feedback",
-    "prescription_summary",
+    "summary",
     "task",
   ]),
   title: z.string().min(1).max(200),
@@ -61,7 +61,7 @@ export const PillReviseSchema = z.object({
       "discovery",
       "learning",
       "feedback",
-      "prescription_summary",
+      "summary",
       "task",
     ])
     .optional(),
@@ -83,7 +83,7 @@ export const PillFindSchema = z.object({
       "discovery",
       "learning",
       "feedback",
-      "prescription_summary",
+      "summary",
       "task",
     ])
     .optional(),
