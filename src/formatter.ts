@@ -38,17 +38,21 @@ function prescription(d: Prescription, includeId = false): string {
 }
 
 
+function stripHtml(s: string): string {
+  return s.replace(/<[^>]+>/g, "").replace(/\s*\n\s*/g, " ");
+}
+
 function searchResults(results: SearchResult[], entity: string): string {
   if (!results.length) return `No ${entity} found.`;
   const label = results.length === 1 ? entity.slice(0, -1) : entity;
   const lines = [`Found ${results.length} ${label}`];
   for (const r of results) {
-    const meta = r.prescription_id
-      ? ` (id: ${r.id}, rx: ${r.prescription_id.slice(0, 8)}...)`
-      : ` (id: ${r.id})`;
     lines.push("");
-    lines.push(`[${r.compound}] ${r.title}${meta}`);
-    if (r.snippet) lines.push(r.snippet);
+    lines.push(`id: ${r.id}`);
+    lines.push(`compound: ${r.compound}`);
+    lines.push(`title: ${r.title}`);
+    if (r.prescription_id) lines.push(`prescription_id: ${r.prescription_id}`);
+    if (r.snippet) lines.push(`snippet: ${stripHtml(r.snippet)}`);
   }
   return lines.join("\n");
 }
