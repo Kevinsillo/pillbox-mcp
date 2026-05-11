@@ -14,7 +14,8 @@ import type {
   SearchResult,
   Bottle,
   CompoundEntry,
-  ContextResult,
+  BottleContextResult,
+  PrescriptionContextResult,
 } from "./types.js";
 
 // ─── Helpers de formateo ──────────────────────────────────────────────────────
@@ -132,12 +133,40 @@ const recipes: Record<string, Recipe> = {
   },
   pill_search: (d) => searchResults(d as SearchResult[], "pills"),
   bottle_context: (d) => {
-    const ctx = d as ContextResult;
-    return `${ctx.context}---\nprescriptions: ${ctx.prescription_count}`;
+    const ctx = d as BottleContextResult;
+    if (!ctx.prescriptions.length) return "No prescriptions found.";
+    const lines: string[] = [];
+    for (const rx of ctx.prescriptions) {
+      const status = rx.ended_at ? "closed" : "open";
+      const started = rx.started_at.slice(0, 10);
+      const dateRange = rx.ended_at ? `${started} → ${rx.ended_at.slice(0, 10)}` : started;
+      lines.push(`id: ${rx.id}`);
+      lines.push(`[${status}] ${rx.title}  ${dateRange}  ${rx.pill_count} pills`);
+      lines.push("");
+    }
+    lines.push(`---`);
+    lines.push(`prescriptions: ${ctx.prescription_count}`);
+    return lines.join("\n");
   },
   prescription_context: (d) => {
-    const ctx = d as ContextResult;
-    return `${ctx.context}\n---\npills: ${ctx.pill_count}`;
+    const ctx = d as PrescriptionContextResult;
+    if (!ctx.id) return "";
+    const status = ctx.ended_at ? "closed" : "open";
+    const started = ctx.started_at.slice(0, 10);
+    const dateRange = ctx.ended_at ? `${started} → ${ctx.ended_at.slice(0, 10)}` : started;
+    const lines = [
+      `id: ${ctx.id}`,
+      `[${status}] ${ctx.title}  started: ${dateRange}`,
+      "",
+    ];
+    for (const pill of ctx.pills) {
+      lines.push(`  id: ${pill.id} [${pill.compound}] ${pill.title}`);
+      lines.push(`  ${pill.snippet}`);
+      lines.push("");
+    }
+    lines.push(`---`);
+    lines.push(`pills: ${ctx.pill_count}`);
+    return lines.join("\n");
   },
   pill_compounds: (d) => compoundList(d as CompoundEntry[]),
 

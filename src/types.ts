@@ -80,8 +80,31 @@ export interface CompoundEntry {
   prompt_hint: string;
 }
 
-export interface ContextResult {
-  context: string;
-  prescription_count: number;
+export interface BottleRxEntry {
+  id: string;
+  title: string;
+  started_at: string;
+  ended_at?: string | null;
   pill_count: number;
+}
+
+export interface BottleContextResult {
+  prescription_count: number;
+  prescriptions: BottleRxEntry[];
+}
+
+export interface PrescriptionPillEntry {
+  id: string;
+  compound: string;
+  title: string;
+  snippet: string;
+}
+
+export interface PrescriptionContextResult {
+  id: string | null;
+  title: string;
+  started_at: string;
+  ended_at?: string | null;
+  pill_count: number;
+  pills: PrescriptionPillEntry[];
 }
