@@ -28,7 +28,7 @@ export const AUTHOR_EMAIL_DESC =
 export const PillStoreSchema = z.object({
   prescription_id: z.string().uuid(),
   compound: z.string().min(1).max(64),
-  title: z.string().min(1).max(200),
+  title: z.string().min(1).max(200).describe("Título legible en lenguaje natural."),
   content: z.string().min(1).max(5000).describe("Máximo 5000 caracteres."),
   author_name: z.string().min(1).max(200).describe(AUTHOR_NAME_DESC),
   author_email: z.string().min(1).max(200).describe(AUTHOR_EMAIL_DESC),
@@ -70,7 +70,7 @@ export const PrescriptionContextSchema = z.object({
 
 export const CapsuleStoreSchema = z.object({
   compound: z.string().min(1).max(64),
-  title: z.string().min(1).max(200),
+  title: z.string().min(1).max(200).describe("Título legible en lenguaje natural."),
   content: z.string().min(1).max(5000).describe("Máximo 5000 caracteres."),
 });
 
@@ -99,7 +99,7 @@ export const CapsuleFindSchema = z.object({
 
 export const PrescriptionOpenSchema = z.object({
   bottle_id: z.string().uuid(),
-  title: z.string().min(1).max(300),
+  title: z.string().min(1).max(300).describe("Título legible en lenguaje natural."),
   author_name: z.string().min(1).max(200).describe(AUTHOR_NAME_DESC),
   author_email: z.string().min(1).max(200).describe(AUTHOR_EMAIL_DESC),
 });
