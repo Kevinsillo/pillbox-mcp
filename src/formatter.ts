@@ -71,7 +71,7 @@ function compoundList(entries: CompoundEntry[]): string {
   return entries.map((e) => `${e.id}\n  ${e.description}\n  ${e.prompt_hint}`).join("\n\n");
 }
 
-function writeOutput(title: string, compound: string, content: string, id?: number): string {
+function writeOutput(title: string, compound: string, content: string, id?: string): string {
   const idLine = id !== undefined ? `id: ${id}\n` : "";
   return `${idLine}title: ${title}\ncompound: ${compound}\ncontent: ${content}`;
 }

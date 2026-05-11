@@ -13,7 +13,7 @@ export interface Prescription {
 }
 
 export interface Pill {
-  id: number;
+  id: string;
   compound: string;
   title: string;
   content: string;
@@ -24,7 +24,7 @@ export interface Pill {
 }
 
 export interface PillStoreResult {
-  id: number;
+  id: string;
   action: string;
   title: string;
   compound: string;
@@ -32,12 +32,12 @@ export interface PillStoreResult {
 }
 
 export interface PillDiscardResult {
-  id: number;
+  id: string;
   deleted_at: string;
 }
 
 export interface Capsule {
-  id: number;
+  id: string;
   compound: string;
   title: string;
   content: string;
@@ -45,7 +45,7 @@ export interface Capsule {
 }
 
 export interface CapsuleStoreResult {
-  id: number;
+  id: string;
   action: string;
   title: string;
   compound: string;
@@ -53,12 +53,12 @@ export interface CapsuleStoreResult {
 }
 
 export interface CapsuleDiscardResult {
-  id: number;
+  id: string;
   deleted_at: string;
 }
 
 export interface SearchResult {
-  id: number;
+  id: string;
   compound: string;
   title: string;
   snippet: string;

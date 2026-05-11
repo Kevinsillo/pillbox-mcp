@@ -35,18 +35,18 @@ export const PillStoreSchema = z.object({
 });
 
 export const PillReadSchema = z.object({
-  id: z.number().int().positive(),
+  id: z.string().uuid(),
 });
 
 export const PillReviseSchema = z.object({
-  id: z.number().int().positive(),
+  id: z.string().uuid(),
   title: z.string().min(1).max(200).optional(),
   content: z.string().min(1).optional(),
   compound: z.string().min(1).max(64).optional(),
 });
 
 export const PillDiscardSchema = z.object({
-  id: z.number().int().positive(),
+  id: z.string().uuid(),
 });
 
 export const PillFindSchema = z.object({
@@ -75,18 +75,18 @@ export const CapsuleStoreSchema = z.object({
 });
 
 export const CapsuleReadSchema = z.object({
-  id: z.number().int().positive(),
+  id: z.string().uuid(),
 });
 
 export const CapsuleReviseSchema = z.object({
-  id: z.number().int().positive(),
+  id: z.string().uuid(),
   title: z.string().min(1).max(200).optional(),
   content: z.string().min(1).optional(),
   compound: z.string().min(1).max(64).optional(),
 });
 
 export const CapsuleDiscardSchema = z.object({
-  id: z.number().int().positive(),
+  id: z.string().uuid(),
 });
 
 export const CapsuleFindSchema = z.object({
