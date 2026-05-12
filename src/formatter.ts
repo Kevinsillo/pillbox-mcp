@@ -20,6 +20,10 @@ import type {
 
 // ─── Helpers de formateo ──────────────────────────────────────────────────────
 
+function shortId(id: string): string {
+  return id.slice(0, 8);
+}
+
 function formatAuthor(name: string | null, email: string | null): string | null {
   if (name && email) return `${name} <${email}>`;
   if (name) return name;
@@ -29,7 +33,7 @@ function formatAuthor(name: string | null, email: string | null): string | null 
 
 function prescription(d: Prescription, includeId = false): string {
   const lines: string[] = [];
-  if (includeId) lines.push(`id: ${d.id}`);
+  if (includeId) lines.push(`id: ${shortId(d.id)}`);
   lines.push(`title: ${d.title}`);
   lines.push(`started_at: ${d.started_at}`);
   if (d.ended_at) lines.push(`ended_at: ${d.ended_at}`);
@@ -49,10 +53,10 @@ function searchResults(results: SearchResult[], entity: string): string {
   const lines = [`Found ${results.length} ${label}`];
   for (const r of results) {
     lines.push("");
-    lines.push(`id: ${r.id}`);
+    lines.push(`id: ${shortId(r.id)}`);
     lines.push(`compound: ${r.compound}`);
     lines.push(`title: ${r.title}`);
-    if (r.prescription_id) lines.push(`prescription_id: ${r.prescription_id}`);
+    if (r.prescription_id) lines.push(`prescription_id: ${shortId(r.prescription_id)}`);
     if (r.snippet) lines.push(`snippet: ${stripHtml(r.snippet)}`);
   }
   return lines.join("\n");
@@ -65,7 +69,7 @@ function bottleList(bottles: Bottle[]): string {
     const status = b.linked ? "●" : "○";
     const unlinked = b.linked ? "" : " [unlinked]";
     lines.push("");
-    lines.push(`${status} ${b.display_name} [${b.scope}] ${b.id}${unlinked}`);
+    lines.push(`${status} ${b.display_name} [${b.scope}] ${shortId(b.id)}${unlinked}`);
     lines.push(`  ${b.directory}`);
   }
   return lines.join("\n");
@@ -77,7 +81,7 @@ function compoundList(entries: CompoundEntry[]): string {
 }
 
 function writeOutput(title: string, compound: string, content: string, id?: string): string {
-  const idLine = id !== undefined ? `id: ${id}\n` : "";
+  const idLine = id !== undefined ? `id: ${shortId(id)}\n` : "";
   return `${idLine}title: ${title}\ncompound: ${compound}\ncontent: ${content}`;
 }
 
@@ -114,7 +118,7 @@ const recipes: Record<string, Recipe> = {
   pill_read: (d) => {
     const p = d as Pill;
     const lines = [
-      `id: ${p.id}`,
+      `id: ${shortId(p.id)}`,
       `title: ${p.title}`,
       `compound: ${p.compound}`,
     ];
@@ -129,7 +133,7 @@ const recipes: Record<string, Recipe> = {
   },
   pill_discard: (d) => {
     const r = d as PillDiscardResult;
-    return `id: ${r.id}\ndeleted_at: ${r.deleted_at}`;
+    return `id: ${shortId(r.id)}\ndeleted_at: ${r.deleted_at}`;
   },
   pill_search: (d) => searchResults(d as SearchResult[], "pills"),
   bottle_context: (d) => {
@@ -140,7 +144,7 @@ const recipes: Record<string, Recipe> = {
       const status = rx.ended_at ? "closed" : "open";
       const started = rx.started_at.slice(0, 10);
       const dateRange = rx.ended_at ? `${started} → ${rx.ended_at.slice(0, 10)}` : started;
-      lines.push(`id: ${rx.id}`);
+      lines.push(`id: ${shortId(rx.id)}`);
       lines.push(`[${status}] ${rx.title}  ${dateRange}  ${rx.pill_count} pills`);
       lines.push("");
     }
@@ -155,12 +159,12 @@ const recipes: Record<string, Recipe> = {
     const started = ctx.started_at.slice(0, 10);
     const dateRange = ctx.ended_at ? `${started} → ${ctx.ended_at.slice(0, 10)}` : started;
     const lines = [
-      `id: ${ctx.id}`,
+      `id: ${shortId(ctx.id)}`,
       `[${status}] ${ctx.title}  started: ${dateRange}`,
       "",
     ];
     for (const pill of ctx.pills) {
-      lines.push(`  id: ${pill.id} [${pill.compound}] ${pill.title}`);
+      lines.push(`  id: ${shortId(pill.id)} [${pill.compound}] ${pill.title}`);
       lines.push(`  ${pill.snippet}`);
       lines.push("");
     }
@@ -176,7 +180,7 @@ const recipes: Record<string, Recipe> = {
   },
   capsule_read: (d) => {
     const c = d as Capsule;
-    return `id: ${c.id}\ntitle: ${c.title}\ncompound: ${c.compound}\ncontent: ${c.content}`;
+    return `id: ${shortId(c.id)}\ntitle: ${c.title}\ncompound: ${c.compound}\ncontent: ${c.content}`;
   },
   capsule_revise: (d) => {
     const c = d as Capsule;
@@ -184,7 +188,7 @@ const recipes: Record<string, Recipe> = {
   },
   capsule_discard: (d) => {
     const r = d as CapsuleDiscardResult;
-    return `id: ${r.id}\ndeleted_at: ${r.deleted_at}`;
+    return `id: ${shortId(r.id)}\ndeleted_at: ${r.deleted_at}`;
   },
   capsule_search: (d) => searchResults(d as SearchResult[], "capsules"),
   capsule_compounds: (d) => compoundList(d as CompoundEntry[]),
@@ -193,7 +197,7 @@ const recipes: Record<string, Recipe> = {
     const b = d as Bottle;
     return [
       "Bottle created",
-      `id: ${b.id}`,
+      `id: ${shortId(b.id)}`,
       `name: ${b.name}`,
       `display_name: ${b.display_name}`,
       `directory: ${b.directory}`,
