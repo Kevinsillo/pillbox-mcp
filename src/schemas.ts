@@ -1,134 +1,139 @@
 /**
- * Schemas Zod para los inputs de todas las tools.
- * Se usan tanto para validación como para generar el inputSchema del MCP.
+ * Zod schemas for all tool inputs.
+ *
+ * SHAPE-ONLY: these schemas validate shape only (types, field presence,
+ * optionality). Business rules (min/max lengths, numeric ranges, ID format)
+ * are enforced in the Rust binary via `validator` and `PillboxError`, and
+ * returned to the client as typed codes (`invalid_id`, `content_too_large`,
+ * `validation_error`). Keeping rules in a single place avoids drift between
+ * the TS wrapper and the Rust core.
  */
 
 import { z } from "zod";
 
-// ─── Author (compartido) ──────────────────────────────────────────────────────
-// Campos obligatorios. Resolución (responsabilidad del agente):
-//   (1) Leer ~/.pillbox/identity.json (campos `name` y `email`).
-//   (2) Si no existe: obtener de git config y persistir en identity.json.
-//   (3) Si git config falla: preguntar al usuario y persistir en identity.json.
+// ─── Author (shared) ──────────────────────────────────────────────────────────
+// Required fields. Resolution (agent responsibility):
+//   (1) Read ~/.pillbox/identity.json (`name` and `email` fields).
+//   (2) If missing: fetch from git config and persist to identity.json.
+//   (3) If git config fails: ask the user and persist to identity.json.
 
 export const AUTHOR_NAME_DESC =
-  "Nombre del autor humano detrás del agente. Resolución en 3 pasos: " +
-  "(1) leer el campo `name` de ~/.pillbox/identity.json; " +
-  "(2) si no existe, obtener de `git config user.name` y persistirlo en ese fichero; " +
-  "(3) si git config falla, preguntar al usuario y persistirlo en ese fichero.";
+  "Name of the human author behind the agent. 3-step resolution: " +
+  "(1) read the `name` field from ~/.pillbox/identity.json; " +
+  "(2) if missing, fetch from `git config user.name` and persist it there; " +
+  "(3) if git config fails, ask the user and persist it there.";
 
 export const AUTHOR_EMAIL_DESC =
-  "Email del autor humano detrás del agente. Resolución en 3 pasos: " +
-  "(1) leer el campo `email` de ~/.pillbox/identity.json; " +
-  "(2) si no existe, obtener de `git config user.email` y persistirlo en ese fichero; " +
-  "(3) si git config falla, preguntar al usuario y persistirlo en ese fichero.";
+  "Email of the human author behind the agent. 3-step resolution: " +
+  "(1) read the `email` field from ~/.pillbox/identity.json; " +
+  "(2) if missing, fetch from `git config user.email` and persist it there; " +
+  "(3) if git config fails, ask the user and persist it there.";
 
 // ─── Pills ────────────────────────────────────────────────────────────────────
 
 export const PillStoreSchema = z.object({
-  prescription_id: z.string().min(12),
-  compound: z.string().min(1).max(64),
-  title: z.string().min(1).max(200).describe("Título legible en lenguaje natural."),
-  content: z.string().min(1).max(5000).describe("Máximo 5000 caracteres."),
-  author_name: z.string().min(1).max(200).describe(AUTHOR_NAME_DESC),
-  author_email: z.string().min(1).max(200).describe(AUTHOR_EMAIL_DESC),
+  prescription_id: z.string(),
+  compound: z.string(),
+  title: z.string().describe("Human-readable natural-language title."),
+  content: z.string().describe("Up to 5000 characters."),
+  author_name: z.string().describe(AUTHOR_NAME_DESC),
+  author_email: z.string().describe(AUTHOR_EMAIL_DESC),
 });
 
 export const PillReadSchema = z.object({
-  id: z.string().min(12),
+  id: z.string(),
 });
 
 export const PillReviseSchema = z.object({
-  id: z.string().min(12),
-  title: z.string().min(1).max(200).optional(),
-  content: z.string().min(1).optional(),
-  compound: z.string().min(1).max(64).optional(),
+  id: z.string(),
+  title: z.string().optional(),
+  content: z.string().optional(),
+  compound: z.string().optional(),
 });
 
 export const PillDiscardSchema = z.object({
-  id: z.string().min(12),
+  id: z.string(),
 });
 
 export const PillFindSchema = z.object({
-  query: z.string().min(1),
-  bottle_id: z.string().min(12).optional(),
-  compound: z.string().min(1).max(64).optional(),
-  limit: z.number().int().min(1).max(100).optional(),
+  query: z.string(),
+  bottle_id: z.string().optional(),
+  compound: z.string().optional(),
+  limit: z.number().int().optional(),
 });
 
 export const BottleContextSchema = z.object({
-  bottle_id: z.string().min(12),
-  limit: z.number().int().min(1).max(100).optional(),
+  bottle_id: z.string(),
+  limit: z.number().int().optional(),
 });
 
 export const PrescriptionContextSchema = z.object({
-  prescription_id: z.string().min(12),
-  limit: z.number().int().min(1).max(100).optional(),
+  prescription_id: z.string(),
+  limit: z.number().int().optional(),
 });
 
 // ─── Capsules ─────────────────────────────────────────────────────────────────
 
 export const CapsuleStoreSchema = z.object({
-  compound: z.string().min(1).max(64),
-  title: z.string().min(1).max(200).describe("Título legible en lenguaje natural."),
-  content: z.string().min(1).max(5000).describe("Máximo 5000 caracteres."),
+  compound: z.string(),
+  title: z.string().describe("Human-readable natural-language title."),
+  content: z.string().describe("Up to 5000 characters."),
 });
 
 export const CapsuleReadSchema = z.object({
-  id: z.string().min(12),
+  id: z.string(),
 });
 
 export const CapsuleReviseSchema = z.object({
-  id: z.string().min(12),
-  title: z.string().min(1).max(200).optional(),
-  content: z.string().min(1).optional(),
-  compound: z.string().min(1).max(64).optional(),
+  id: z.string(),
+  title: z.string().optional(),
+  content: z.string().optional(),
+  compound: z.string().optional(),
 });
 
 export const CapsuleDiscardSchema = z.object({
-  id: z.string().min(12),
+  id: z.string(),
 });
 
 export const CapsuleFindSchema = z.object({
-  query: z.string().min(1),
-  compound: z.string().min(1).max(64).optional(),
-  limit: z.number().int().min(1).max(100).optional(),
+  query: z.string(),
+  compound: z.string().optional(),
+  limit: z.number().int().optional(),
 });
 
 // ─── Prescriptions ────────────────────────────────────────────────────────────
 
 export const PrescriptionOpenSchema = z.object({
-  bottle_id: z.string().min(12),
-  title: z.string().min(1).max(300).describe("Título legible en lenguaje natural."),
-  author_name: z.string().min(1).max(200).describe(AUTHOR_NAME_DESC),
-  author_email: z.string().min(1).max(200).describe(AUTHOR_EMAIL_DESC),
+  bottle_id: z.string(),
+  title: z.string().describe("Human-readable natural-language title."),
+  author_name: z.string().describe(AUTHOR_NAME_DESC),
+  author_email: z.string().describe(AUTHOR_EMAIL_DESC),
 });
 
 export const PrescriptionCloseSchema = z.object({
-  id: z.string().min(12),
+  id: z.string(),
 });
 
 export const PrescriptionReadSchema = z.object({
-  id: z.string().min(12),
+  id: z.string(),
 });
 
 export const PrescriptionDiscardSchema = z.object({
-  id: z.string().min(12),
+  id: z.string(),
 });
 
 // ─── Bottles ──────────────────────────────────────────────────────────────────
 
 export const BottleCreateSchema = z.object({
-  name: z.string().min(1).max(100),
-  display_name: z.string().min(1).max(200),
-  directory: z.string().min(1),
+  name: z.string(),
+  display_name: z.string(),
+  directory: z.string(),
   scope: z.enum(["local", "global"]),
 });
 
 export const BottleVinculateSchema = z.object({
   directory: z
     .string()
-    .min(1)
     .optional()
     .describe(
       "Absolute path to directory containing .pillbox/pillbox.db. Defaults to cwd of the pillbox process.",
