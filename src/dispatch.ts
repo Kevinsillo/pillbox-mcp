@@ -41,5 +41,19 @@ export function execTool(
   tool: string,
   input: Record<string, unknown> = {},
 ): McpResponse {
-  return fromExecResult(tool, pillboxExec(tool, input));
+  const result = pillboxExec(tool, input);
+  if (!result.ok) {
+    return {
+      content: [
+        {
+          type: "text",
+          text:
+            formatter.formatError(result.error, result.message, result.data) +
+            `\nsent_input: ${JSON.stringify(input)}`,
+        },
+      ],
+      isError: true,
+    };
+  }
+  return fromExecResult(tool, result);
 }
