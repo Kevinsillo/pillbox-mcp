@@ -114,6 +114,10 @@ export const PrescriptionCloseSchema = z.object({
   id: z.string(),
 });
 
+export const PrescriptionReopenSchema = z.object({
+  id: z.string(),
+});
+
 export const PrescriptionReadSchema = z.object({
   id: z.string(),
 });

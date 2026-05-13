@@ -7,6 +7,7 @@ import { execTool } from "../dispatch.js";
 import {
   PrescriptionOpenSchema,
   PrescriptionCloseSchema,
+  PrescriptionReopenSchema,
   PrescriptionReadSchema,
   PrescriptionDiscardSchema,
   PrescriptionContextSchema,
@@ -32,6 +33,17 @@ export function registerPrescriptionTools(server: McpServer): void {
       inputSchema: PrescriptionCloseSchema.shape,
     },
     async (input) => execTool("prescription_close", input),
+  );
+
+  server.registerTool(
+    "prescription_reopen",
+    {
+      description:
+        "Reabre una prescripción cerrada para permitir editar/añadir pills. " +
+        "Si el bottle ya tiene otra prescripción abierta, devuelve error `prescription_collision` con su `existing_id`.",
+      inputSchema: PrescriptionReopenSchema.shape,
+    },
+    async (input) => execTool("prescription_reopen", input),
   );
 
   server.registerTool(

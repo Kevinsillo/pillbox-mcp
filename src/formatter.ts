@@ -114,6 +114,7 @@ type Recipe = (data: unknown) => string;
 const recipes: Record<string, Recipe> = {
   prescription_open: (d) => prescription(d as Prescription, true),
   prescription_close: (d) => prescription(d as Prescription),
+  prescription_reopen: (d) => prescription(d as Prescription, true),
   prescription_read: (d) => prescription(d as Prescription),
   prescription_discard: () => "Prescription discarded.",
 
@@ -297,6 +298,24 @@ const errorRecipes: Record<string, ErrorRecipe> = {
     return [
       `error: prescription_already_open`,
       `Prescription already open: ${d.title} (id: ${shortId(d.id)}, since ${d.started_at}, ${d.pill_count} pills)`,
+    ].join("\n");
+  },
+
+  prescription_closed: (_message, data) => {
+    const d = (data ?? {}) as { prescription_id?: string };
+    const lines = [`error: prescription_closed`];
+    if (d.prescription_id) lines.push(`prescription_id: ${shortId(d.prescription_id)}`);
+    lines.push("Reopen the prescription with `prescription_reopen` before editing its pills.");
+    return lines.join("\n");
+  },
+
+  prescription_collision: (_message, data) => {
+    const d = data as { bottle_id: string; existing_id: string };
+    return [
+      `error: prescription_collision`,
+      `bottle_id: ${shortId(d.bottle_id)}`,
+      `existing_id: ${shortId(d.existing_id)}`,
+      "Close the other open prescription before reopening this one.",
     ].join("\n");
   },
 };
