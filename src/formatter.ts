@@ -13,7 +13,6 @@ import type {
   CapsuleDiscardResult,
   SearchResult,
   Bottle,
-  CompoundEntry,
   BottleContextResult,
   PrescriptionContextResult,
 } from "./types.js";
@@ -81,9 +80,9 @@ function bottleList(bottles: Bottle[]): string {
   return lines.join("\n");
 }
 
-function compoundList(entries: CompoundEntry[]): string {
-  if (!entries.length) return "No compounds available.";
-  return entries.map((e) => `${e.id}\n  ${e.description}\n  ${e.prompt_hint}`).join("\n\n");
+function compoundFrequencyList(entries: { compound: string; count: number }[]): string {
+  if (!entries.length) return "No compounds in use.";
+  return entries.map((e) => `- ${e.compound} (${e.count})`).join("\n");
 }
 
 function writeOutput(title: string, compound: string, content: string, id?: string): string {
@@ -179,7 +178,7 @@ const recipes: Record<string, Recipe> = {
     lines.push(`pills: ${ctx.pill_count}`);
     return lines.join("\n");
   },
-  pill_compounds: (d) => compoundList(d as CompoundEntry[]),
+  pill_compounds: (d) => compoundFrequencyList(d as { compound: string; count: number }[]),
 
   capsule_store: (d) => {
     const r = d as CapsuleStoreResult;
@@ -198,7 +197,7 @@ const recipes: Record<string, Recipe> = {
     return `id: ${shortId(r.id)}\ndeleted_at: ${r.deleted_at}`;
   },
   capsule_search: (d) => searchResults(d as SearchResult[], "capsules"),
-  capsule_compounds: (d) => compoundList(d as CompoundEntry[]),
+  capsule_compounds: (d) => compoundFrequencyList(d as { compound: string; count: number }[]),
 
   bottle_create: (d) => {
     const b = d as Bottle;
@@ -258,14 +257,29 @@ function cleanSerdeMessage(message: string): string {
 
 const errorRecipes: Record<string, ErrorRecipe> = {
   content_too_large: (_message, data) => {
-    const d = data as { actual: number; limit: number };
+    const d = data as {
+      actual: number;
+      limit: number;
+      operation: "create" | "update";
+    };
     const over = d.actual - d.limit;
-    const parts = Math.ceil(d.actual / TARGET_PART_CHARS);
-    return [
+    const lines = [
       `error: content_too_large`,
       `Content exceeds ${d.limit} chars (got ${d.actual}, ${over} over).`,
-      `Recommendation: split into ${parts} parts of ~${TARGET_PART_CHARS} chars each.`,
-    ].join("\n");
+    ];
+    if (d.operation === "update") {
+      // Update modifies one row in place — splitting would require creating
+      // a new entry, contradicting the operation. Trim instead.
+      lines.push(
+        `Recommendation: trim the content (consolidate, drop low-value detail, reference adjacent entries by ID instead of re-describing). Splitting is NOT possible on update — it modifies one ID in place. If trimming would lose load-bearing information, the entry has outgrown its scope and needs a refactor.`,
+      );
+    } else {
+      const parts = Math.ceil(d.actual / TARGET_PART_CHARS);
+      lines.push(
+        `Recommendation: split into ${parts} parts of ~${TARGET_PART_CHARS} chars each.`,
+      );
+    }
+    return lines.join("\n");
   },
 
   validation_error: (message) => {

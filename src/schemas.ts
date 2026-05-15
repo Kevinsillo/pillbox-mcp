@@ -60,6 +60,15 @@ export const PillFindSchema = z.object({
   bottle_id: z.string().optional(),
   compound: z.string().optional(),
   limit: z.number().int().optional(),
+  fuzzy: z
+    .boolean()
+    .optional()
+    .describe("Enable approximate (fuzzy) match via Jaro-Winkler expansion. Default false."),
+});
+
+export const PillCompoundsSchema = z.object({
+  bottle_id: z.string().optional(),
+  limit: z.number().int().optional(),
 });
 
 export const BottleContextSchema = z.object({
@@ -98,6 +107,14 @@ export const CapsuleDiscardSchema = z.object({
 export const CapsuleFindSchema = z.object({
   query: z.string(),
   compound: z.string().optional(),
+  limit: z.number().int().optional(),
+  fuzzy: z
+    .boolean()
+    .optional()
+    .describe("Enable approximate (fuzzy) match via Jaro-Winkler expansion. Default false."),
+});
+
+export const CapsuleCompoundsSchema = z.object({
   limit: z.number().int().optional(),
 });
 

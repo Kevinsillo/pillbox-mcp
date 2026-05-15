@@ -10,6 +10,7 @@ import {
   PillReviseSchema,
   PillDiscardSchema,
   PillFindSchema,
+  PillCompoundsSchema,
 } from "../schemas.js";
 
 export function registerPillTools(server: McpServer): void {
@@ -62,10 +63,21 @@ export function registerPillTools(server: McpServer): void {
       description:
         "Busca pills usando búsqueda full-text (FTS5). " +
         "Acepta múltiples términos separados por espacios. " +
-        "Filtra opcionalmente por bottle_id o compound.",
+        "Filtra opcionalmente por bottle_id o compound. " +
+        "fuzzy: enable approximate match (default false).",
       inputSchema: PillFindSchema.shape,
     },
     async (input) => execTool("pill_search", input),
+  );
+
+  server.registerTool(
+    "pill_compounds",
+    {
+      description:
+        "List distinct pill compounds with their frequency in the current bottle, ordered by count desc.",
+      inputSchema: PillCompoundsSchema.shape,
+    },
+    async (input) => execTool("pill_compounds", input),
   );
 
 }

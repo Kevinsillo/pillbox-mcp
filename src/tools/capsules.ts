@@ -10,6 +10,7 @@ import {
   CapsuleReviseSchema,
   CapsuleDiscardSchema,
   CapsuleFindSchema,
+  CapsuleCompoundsSchema,
 } from "../schemas.js";
 
 export function registerCapsuleTools(server: McpServer): void {
@@ -59,10 +60,21 @@ export function registerCapsuleTools(server: McpServer): void {
     {
       description:
         "Busca capsules usando búsqueda full-text (FTS5). " +
-        "Las capsules son globales — no se filtran por proyecto.",
+        "Las capsules son globales — no se filtran por proyecto. " +
+        "fuzzy: enable approximate match (default false).",
       inputSchema: CapsuleFindSchema.shape,
     },
     async (input) => execTool("capsule_search", input),
+  );
+
+  server.registerTool(
+    "capsule_compounds",
+    {
+      description:
+        "List distinct capsule compounds with their frequency, ordered by count desc.",
+      inputSchema: CapsuleCompoundsSchema.shape,
+    },
+    async (input) => execTool("capsule_compounds", input),
   );
 
 }
