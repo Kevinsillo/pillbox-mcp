@@ -1,9 +1,9 @@
 /**
- * Tools de pills — conocimiento específico de proyecto.
+ * Pill tools — project-specific knowledge.
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { execTool } from "../dispatch.js";
+import { execTool, validationError } from "../dispatch.js";
 import {
   PillStoreSchema,
   PillReadSchema,
@@ -18,11 +18,11 @@ export function registerPillTools(server: McpServer): void {
     "pill_store",
     {
       description:
-        "Guarda conocimiento específico del proyecto en una prescripción abierta. " +
-        "Usar en lugar de capsule_store cuando el conocimiento pertenece a este proyecto concreto — " +
-        "requiere prescription_id activa. " +
-        "Ejemplos: decisiones de arquitectura, bugs corregidos, patrones del código. " +
-        "El campo compound es texto libre — consultar el skill para los valores convencionales.",
+        "Stores project-specific knowledge inside an open prescription. " +
+        "Use instead of capsule_store when the knowledge belongs to this specific project — " +
+        "requires an active prescription_id. " +
+        "Examples: architecture decisions, fixed bugs, code patterns. " +
+        "The compound field is free text — check the skill for conventional values.",
       inputSchema: PillStoreSchema.shape,
     },
     async (input) => execTool("pill_store", input),
@@ -31,7 +31,7 @@ export function registerPillTools(server: McpServer): void {
   server.registerTool(
     "pill_read",
     {
-      description: "Lee el contenido completo de una pill por su ID.",
+      description: "Reads the full content of a pill by its ID.",
       inputSchema: PillReadSchema.shape,
     },
     async (input) => execTool("pill_read", input),
@@ -41,8 +41,8 @@ export function registerPillTools(server: McpServer): void {
     "pill_revise",
     {
       description:
-        "Actualiza el título, contenido y/o compound de una pill existente. " +
-        "Solo los campos proporcionados se modifican.",
+        "Updates the title, content and/or compound of an existing pill. " +
+        "Only the provided fields are modified.",
       inputSchema: PillReviseSchema.shape,
     },
     async (input) => execTool("pill_revise", input),
@@ -51,7 +51,7 @@ export function registerPillTools(server: McpServer): void {
   server.registerTool(
     "pill_discard",
     {
-      description: "Hace soft-delete de una pill. No se puede deshacer.",
+      description: "Soft-deletes a pill. Cannot be undone.",
       inputSchema: PillDiscardSchema.shape,
     },
     async (input) => execTool("pill_discard", input),
@@ -61,13 +61,21 @@ export function registerPillTools(server: McpServer): void {
     "pill_search",
     {
       description:
-        "Busca pills usando búsqueda full-text (FTS5). " +
-        "Acepta múltiples términos separados por espacios. " +
-        "Filtra opcionalmente por bottle_id o compound. " +
+        "Searches pills using full-text search (FTS5). " +
+        "Either 'query' (FTS text) or 'compound' (exact filter) must be provided — at least one. " +
+        "If only 'compound' is passed, lists pills of that compound without FTS filtering. " +
+        "Optionally filters by bottle_id. " +
         "fuzzy: enable approximate match (default false).",
       inputSchema: PillFindSchema.shape,
     },
-    async (input) => execTool("pill_search", input),
+    async (input) => {
+      const query = typeof input.query === "string" ? input.query.trim() : "";
+      const compound = typeof input.compound === "string" ? input.compound.trim() : "";
+      if (!query && !compound) {
+        return validationError("Either 'query' or 'compound' must be provided (at least one).");
+      }
+      return execTool("pill_search", input);
+    },
   );
 
   server.registerTool(

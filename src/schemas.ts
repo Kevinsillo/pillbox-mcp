@@ -56,7 +56,7 @@ export const PillDiscardSchema = z.object({
 });
 
 export const PillFindSchema = z.object({
-  query: z.string(),
+  query: z.string().optional(),
   bottle_id: z.string().optional(),
   compound: z.string().optional(),
   limit: z.number().int().optional(),
@@ -105,7 +105,7 @@ export const CapsuleDiscardSchema = z.object({
 });
 
 export const CapsuleFindSchema = z.object({
-  query: z.string(),
+  query: z.string().optional(),
   compound: z.string().optional(),
   limit: z.number().int().optional(),
   fuzzy: z

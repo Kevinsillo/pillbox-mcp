@@ -37,6 +37,13 @@ export function fromExecResult(tool: string, result: ExecResult): McpResponse {
   };
 }
 
+export function validationError(message: string): McpResponse {
+  return {
+    content: [{ type: "text", text: `Validation error: ${message}` }],
+    isError: true,
+  };
+}
+
 export function execTool(
   tool: string,
   input: Record<string, unknown> = {},

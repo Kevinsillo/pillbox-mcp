@@ -1,5 +1,5 @@
 /**
- * Tools de gestión de prescripciones (sesiones de trabajo) y contexto de navegación.
+ * Prescription (work session) management tools and navigation context.
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -18,9 +18,9 @@ export function registerPrescriptionTools(server: McpServer): void {
     "prescription_open",
     {
       description:
-        "Abre una nueva prescripción (sesión de trabajo) para un bottle. " +
-        "Devuelve el ID de la prescripción creada. " +
-        "Si ya hay una abierta, devuelve error `prescription_already_open` con sus datos.",
+        "Opens a new prescription (work session) for a bottle. " +
+        "Returns the ID of the created prescription. " +
+        "If one is already open, returns error `prescription_already_open` with its data.",
       inputSchema: PrescriptionOpenSchema.shape,
     },
     async (input) => execTool("prescription_open", input),
@@ -29,7 +29,7 @@ export function registerPrescriptionTools(server: McpServer): void {
   server.registerTool(
     "prescription_close",
     {
-      description: "Cierra una prescripción abierta. Finaliza la sesión de trabajo.",
+      description: "Closes an open prescription. Ends the work session.",
       inputSchema: PrescriptionCloseSchema.shape,
     },
     async (input) => execTool("prescription_close", input),
@@ -39,8 +39,8 @@ export function registerPrescriptionTools(server: McpServer): void {
     "prescription_reopen",
     {
       description:
-        "Reabre una prescripción cerrada para permitir editar/añadir pills. " +
-        "Si el bottle ya tiene otra prescripción abierta, devuelve error `prescription_collision` con su `existing_id`.",
+        "Reopens a closed prescription to allow editing/adding pills. " +
+        "If the bottle already has another open prescription, returns error `prescription_collision` with its `existing_id`.",
       inputSchema: PrescriptionReopenSchema.shape,
     },
     async (input) => execTool("prescription_reopen", input),
@@ -49,7 +49,7 @@ export function registerPrescriptionTools(server: McpServer): void {
   server.registerTool(
     "prescription_read",
     {
-      description: "Lee los detalles de una prescripción por su ID.",
+      description: "Reads the details of a prescription by its ID.",
       inputSchema: PrescriptionReadSchema.shape,
     },
     async (input) => execTool("prescription_read", input),
@@ -58,7 +58,7 @@ export function registerPrescriptionTools(server: McpServer): void {
   server.registerTool(
     "prescription_discard",
     {
-      description: "Descarta una prescripción y hace soft-delete en cascada de todas sus pills.",
+      description: "Discards a prescription and cascades soft-delete to all its pills.",
       inputSchema: PrescriptionDiscardSchema.shape,
     },
     async (input) => execTool("prescription_discard", input),
@@ -68,9 +68,9 @@ export function registerPrescriptionTools(server: McpServer): void {
     "prescription_context",
     {
       description:
-        "Pills de una prescription concreta con id, compound, título y snippet de 300 chars. " +
-        "Usar tras bottle_context para profundizar en una sesión de trabajo específica. " +
-        "Para el contenido completo de una pill individual, usar pill_read.",
+        "Pills of a specific prescription with id, compound, title and 300-char snippet. " +
+        "Use after bottle_context to drill into a specific work session. " +
+        "For the full content of an individual pill, use pill_read.",
       inputSchema: PrescriptionContextSchema.shape,
     },
     async (input) => execTool("prescription_context", input),

@@ -1,5 +1,5 @@
 /**
- * Tools de gestión de bottles (proyectos).
+ * Bottle (project) management tools.
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -10,7 +10,7 @@ export function registerBottleTools(server: McpServer): void {
   server.registerTool(
     "bottle_list",
     {
-      description: "Lista todos los bottles (proyectos) registrados en Pillbox.",
+      description: "Lists all bottles (projects) registered in Pillbox.",
       inputSchema: {},
     },
     async () => execTool("bottle_list"),
@@ -20,9 +20,9 @@ export function registerBottleTools(server: McpServer): void {
     "bottle_context",
     {
       description:
-        "Índice navegable de prescriptions de un bottle: id, título, estado, fechas y pill_count. " +
-        "Usar al inicio de una sesión para ver qué sesiones de trabajo existen. " +
-        "Para ver las pills de una prescription concreta, usar prescription_context con su id.",
+        "Navigable index of prescriptions in a bottle: id, title, status, dates and pill_count. " +
+        "Use at the start of a session to see which work sessions exist. " +
+        "To view the pills of a specific prescription, use prescription_context with its id.",
       inputSchema: BottleContextSchema.shape,
     },
     async (input) => execTool("bottle_context", input),
@@ -32,8 +32,8 @@ export function registerBottleTools(server: McpServer): void {
     "bottle_create",
     {
       description:
-        "Registra un nuevo bottle (proyecto) en Pillbox. " +
-        "Normalmente lo hace `pillbox bottle init`; esta tool existe para automatización.",
+        "Registers a new bottle (project) in Pillbox. " +
+        "Normally done by `pillbox bottle init`; this tool exists for automation.",
       inputSchema: BottleCreateSchema.shape,
     },
     async (input) => execTool("bottle_create", input),
