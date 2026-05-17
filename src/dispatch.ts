@@ -44,11 +44,11 @@ export function validationError(message: string): McpResponse {
   };
 }
 
-export function execTool(
+export async function execTool(
   tool: string,
   input: Record<string, unknown> = {},
-): McpResponse {
-  const result = pillboxExec(tool, input);
+): Promise<McpResponse> {
+  const result = await pillboxExec(tool, input);
   if (!result.ok) {
     return {
       content: [

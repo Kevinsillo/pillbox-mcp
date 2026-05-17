@@ -47,7 +47,6 @@ function prescription(d: Prescription, includeId = false): string {
   return lines.join("\n");
 }
 
-
 function stripHtml(s: string): string {
   return s.replace(/<[^>]+>/g, "").replace(/\s*\n\s*/g, " ");
 }
@@ -123,11 +122,7 @@ const recipes: Record<string, Recipe> = {
   },
   pill_read: (d) => {
     const p = d as Pill;
-    const lines = [
-      `id: ${shortId(p.id)}`,
-      `title: ${p.title}`,
-      `compound: ${p.compound}`,
-    ];
+    const lines = [`id: ${shortId(p.id)}`, `title: ${p.title}`, `compound: ${p.compound}`];
     const author = formatAuthor(p.author_name, p.author_email);
     if (author) lines.push(`author: ${author}`);
     lines.push(`content: ${p.content}`);
@@ -164,11 +159,7 @@ const recipes: Record<string, Recipe> = {
     const status = ctx.ended_at ? "closed" : "open";
     const started = ctx.started_at.slice(0, 10);
     const dateRange = ctx.ended_at ? `${started} → ${ctx.ended_at.slice(0, 10)}` : started;
-    const lines = [
-      `id: ${shortId(ctx.id)}`,
-      `[${status}] ${ctx.title}  started: ${dateRange}`,
-      "",
-    ];
+    const lines = [`id: ${shortId(ctx.id)}`, `[${status}] ${ctx.title}  started: ${dateRange}`, ""];
     for (const pill of ctx.pills) {
       lines.push(`  id: ${shortId(pill.id)} [${pill.compound}] ${pill.title}`);
       lines.push(`  ${pill.snippet}`);
@@ -275,9 +266,7 @@ const errorRecipes: Record<string, ErrorRecipe> = {
       );
     } else {
       const parts = Math.ceil(d.actual / TARGET_PART_CHARS);
-      lines.push(
-        `Recommendation: split into ${parts} parts of ~${TARGET_PART_CHARS} chars each.`,
-      );
+      lines.push(`Recommendation: split into ${parts} parts of ~${TARGET_PART_CHARS} chars each.`);
     }
     return lines.join("\n");
   },

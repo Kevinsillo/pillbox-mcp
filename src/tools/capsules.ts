@@ -79,11 +79,9 @@ export function registerCapsuleTools(server: McpServer): void {
   server.registerTool(
     "capsule_compounds",
     {
-      description:
-        "List distinct capsule compounds with their frequency, ordered by count desc.",
+      description: "List distinct capsule compounds with their frequency, ordered by count desc.",
       inputSchema: CapsuleCompoundsSchema.shape,
     },
     async (input) => execTool("capsule_compounds", input),
   );
-
 }

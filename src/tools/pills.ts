@@ -87,5 +87,4 @@ export function registerPillTools(server: McpServer): void {
     },
     async (input) => execTool("pill_compounds", input),
   );
-
 }
