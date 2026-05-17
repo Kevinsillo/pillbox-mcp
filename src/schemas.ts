@@ -146,10 +146,14 @@ export const PrescriptionDiscardSchema = z.object({
 // ─── Bottles ──────────────────────────────────────────────────────────────────
 
 export const BottleCreateSchema = z.object({
-  name: z.string(),
-  display_name: z.string(),
-  directory: z.string(),
-  scope: z.enum(["local", "global"]),
+  name: z.string().describe("Slug del bottle (kebab-case, derivado del proyecto)."),
+  display_name: z.string().describe("Nombre legible para mostrar."),
+  scope: z
+    .enum(["local", "global"])
+    .default("local")
+    .describe(
+      "'local' → DB en el cwd del proceso pillbox (.pillbox/pillbox.db). 'global' → DB del usuario (~/.pillbox/pillbox.db). Default: 'local'.",
+    ),
 });
 
 export const BottleVinculateSchema = z.object({

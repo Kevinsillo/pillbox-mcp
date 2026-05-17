@@ -2,6 +2,7 @@
  * Bottle (project) management tools.
  */
 
+import os from "node:os";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { execTool } from "../dispatch.js";
 import { BottleContextSchema, BottleCreateSchema, BottleVinculateSchema } from "../schemas.js";
@@ -33,10 +34,16 @@ export function registerBottleTools(server: McpServer): void {
     {
       description:
         "Registers a new bottle (project) in Pillbox. " +
-        "Normally done by `pillbox bottle init`; this tool exists for automation.",
+        "Normally done by `pillbox bottle init`; this tool exists for automation. " +
+        "The directory is derived automatically from the cwd of the pillbox process " +
+        "(for scope='local') or from the user's home (for scope='global') — " +
+        "do NOT accept directory paths from the user. The only model choice is scope.",
       inputSchema: BottleCreateSchema.shape,
     },
-    async (input) => execTool("bottle_create", input),
+    async (input) => {
+      const directory = input.scope === "global" ? os.homedir() : process.cwd();
+      return execTool("bottle_create", { ...input, directory });
+    },
   );
 
   server.registerTool(
