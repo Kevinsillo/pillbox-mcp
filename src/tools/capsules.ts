@@ -61,9 +61,13 @@ export function registerCapsuleTools(server: McpServer): void {
       description:
         "Searches capsules using full-text search (FTS5). " +
         "Either 'query' (FTS text) or 'compound' (exact filter) must be provided — at least one. " +
+        "Query terms are split on whitespace and on `-_/.:` separators, then joined with OR; " +
+        "bm25 ranks documents matching more terms higher. " +
+        "If the strict pass returns zero results, the server automatically retries with fuzzy " +
+        "(Jaro-Winkler) expansion — the response includes `used_fuzzy: true` when that happened. " +
         "If only 'compound' is passed, lists capsules of that compound without FTS filtering. " +
         "Capsules are global — not filtered by project. " +
-        "fuzzy: enable approximate match (default false).",
+        "fuzzy: force the fuzzy pass from the start, skipping the strict attempt (default false).",
       inputSchema: CapsuleFindSchema.shape,
     },
     async (input) => {

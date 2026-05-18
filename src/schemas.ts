@@ -63,7 +63,10 @@ export const PillFindSchema = z.object({
   fuzzy: z
     .boolean()
     .optional()
-    .describe("Enable approximate (fuzzy) match via Jaro-Winkler expansion. Default false."),
+    .describe(
+      "Force fuzzy (Jaro-Winkler) match from the start, skipping the strict pass. " +
+        "Default false — the server already retries with fuzzy automatically if the strict OR pass returns 0 results.",
+    ),
 });
 
 export const PillCompoundsSchema = z.object({
@@ -111,7 +114,10 @@ export const CapsuleFindSchema = z.object({
   fuzzy: z
     .boolean()
     .optional()
-    .describe("Enable approximate (fuzzy) match via Jaro-Winkler expansion. Default false."),
+    .describe(
+      "Force fuzzy (Jaro-Winkler) match from the start, skipping the strict pass. " +
+        "Default false — the server already retries with fuzzy automatically if the strict OR pass returns 0 results.",
+    ),
 });
 
 export const CapsuleCompoundsSchema = z.object({

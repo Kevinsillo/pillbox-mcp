@@ -63,9 +63,13 @@ export function registerPillTools(server: McpServer): void {
       description:
         "Searches pills using full-text search (FTS5). " +
         "Either 'query' (FTS text) or 'compound' (exact filter) must be provided — at least one. " +
+        "Query terms are split on whitespace and on `-_/.:` separators, then joined with OR; " +
+        "bm25 ranks documents matching more terms higher. " +
+        "If the strict pass returns zero results, the server automatically retries with fuzzy " +
+        "(Jaro-Winkler) expansion — the response includes `used_fuzzy: true` when that happened. " +
         "If only 'compound' is passed, lists pills of that compound without FTS filtering. " +
         "Optionally filters by bottle_id. " +
-        "fuzzy: enable approximate match (default false).",
+        "fuzzy: force the fuzzy pass from the start, skipping the strict attempt (default false).",
       inputSchema: PillFindSchema.shape,
     },
     async (input) => {
