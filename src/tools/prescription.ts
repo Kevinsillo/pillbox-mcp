@@ -20,7 +20,7 @@ export function registerPrescriptionTools(server: McpServer): void {
       description:
         "Opens a new prescription (work session) for a bottle. " +
         "Returns the ID of the created prescription. " +
-        "If one is already open, returns error `prescription_already_open` with its data.",
+        "Multiple prescriptions can be open simultaneously in the same bottle.",
       inputSchema: PrescriptionOpenSchema.shape,
     },
     async (input) => execTool("prescription_open", input),
@@ -40,7 +40,7 @@ export function registerPrescriptionTools(server: McpServer): void {
     {
       description:
         "Reopens a closed prescription to allow editing/adding pills. " +
-        "If the bottle already has another open prescription, returns error `prescription_collision` with its `existing_id`.",
+        "Idempotent: if the prescription is already open, returns it unchanged.",
       inputSchema: PrescriptionReopenSchema.shape,
     },
     async (input) => execTool("prescription_reopen", input),
