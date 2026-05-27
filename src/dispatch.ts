@@ -20,7 +20,7 @@ export interface McpResponse {
   isError?: boolean;
 }
 
-export function fromExecResult(tool: string, result: ExecResult): McpResponse {
+function fromExecResult(tool: string, result: ExecResult): McpResponse {
   if (result.ok) {
     return {
       content: [{ type: "text", text: formatter.format(tool, result.data) }],

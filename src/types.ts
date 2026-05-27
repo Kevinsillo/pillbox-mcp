@@ -74,12 +74,6 @@ export interface Bottle {
   linked: boolean;
 }
 
-export interface CompoundEntry {
-  id: string;
-  description: string;
-  prompt_hint: string;
-}
-
 export interface BottleRxEntry {
   id: string;
   title: string;
