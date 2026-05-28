@@ -7,13 +7,9 @@
  * files would scatter Rust-error-format knowledge with no benefit.
  */
 
-type ErrorRecipe = (message: string, data: unknown) => string;
+import { shortId } from "./id.js";
 
-// Local copy of shortId — duplicated (2 lines) to avoid a cycle with formatter.ts.
-// Same semantics as shortId() in formatter.ts and webui/src/core/utils/id.ts.
-function shortId(id: string): string {
-  return id.replace(/-/g, "").slice(0, 12);
-}
+type ErrorRecipe = (message: string, data: unknown) => string;
 
 const TARGET_PART_CHARS = 2000;
 
