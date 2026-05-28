@@ -3,7 +3,8 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { execTool, validationError } from "../dispatch.js";
+import { execTool } from "../dispatch.js";
+import { requireQueryOrCompound } from "../validation.js";
 import {
   PillStoreSchema,
   PillReadSchema,
@@ -73,11 +74,8 @@ export function registerPillTools(server: McpServer): void {
       inputSchema: PillFindSchema.shape,
     },
     async (input) => {
-      const query = typeof input.query === "string" ? input.query.trim() : "";
-      const compound = typeof input.compound === "string" ? input.compound.trim() : "";
-      if (!query && !compound) {
-        return validationError("Either 'query' or 'compound' must be provided (at least one).");
-      }
+      const invalid = requireQueryOrCompound(input);
+      if (invalid) return invalid;
       return execTool("pill_search", input);
     },
   );

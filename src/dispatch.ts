@@ -8,17 +8,7 @@
 import { pillboxExec } from "./exec.js";
 import type { ExecResult } from "./exec.js";
 import { formatter } from "./formatter.js";
-
-export interface McpContent {
-  type: "text";
-  text: string;
-}
-
-export interface McpResponse {
-  [key: string]: unknown;
-  content: McpContent[];
-  isError?: boolean;
-}
+import type { McpResponse } from "./types.js";
 
 function fromExecResult(tool: string, result: ExecResult): McpResponse {
   if (result.ok) {

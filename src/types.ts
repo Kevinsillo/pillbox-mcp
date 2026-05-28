@@ -2,6 +2,23 @@
  * Tipos de dominio — espejo de los structs que devuelve el binario Rust.
  */
 
+/**
+ * Forma de respuesta que espera el SDK MCP.
+ *
+ * El SDK requiere { content: [{ type: "text", text: string }], isError?: boolean }.
+ * El texto que ve el LLM es texto plano estructurado — nunca JSON crudo.
+ */
+export interface McpContent {
+  type: "text";
+  text: string;
+}
+
+export interface McpResponse {
+  [key: string]: unknown;
+  content: McpContent[];
+  isError?: boolean;
+}
+
 export interface Prescription {
   id: string;
   bottle_id: string;
