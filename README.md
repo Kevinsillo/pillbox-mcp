@@ -23,13 +23,23 @@ All data persistence happens in the Rust binary — this server is a thin bridge
 
 ## Manual installation
 
+Use the install script — it builds the bundle and copies it to `~/.pillbox/mcp/`:
+
+```bash
+./install.sh        # Linux / macOS
+```
+
+```powershell
+.\install.ps1       # Windows
+```
+
+Or build it by hand and point your MCP client at `dist/index.js`:
+
 ```bash
 git clone https://github.com/Kevinsillo/pillbox-mcp
 cd pillbox-mcp
 pnpm install && pnpm build
 ```
-
-Then point your MCP client to `dist/index.js`.
 
 ## Development
 
