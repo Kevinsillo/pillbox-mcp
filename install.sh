@@ -91,18 +91,18 @@ ENTRY="$DEST/index.js"
 for provider in "${DETECTED[@]}"; do
   case "$provider" in
     claude-code)
-      node -e "
+      ENTRY="$ENTRY" node -e "
         const fs = require('fs');
         const cfg = require('os').homedir() + '/.claude.json';
         const root = fs.existsSync(cfg) ? JSON.parse(fs.readFileSync(cfg, 'utf8')) : {};
         root.mcpServers = root.mcpServers || {};
         root.mcpServers.pillbox = { command: 'node', args: [process.env.ENTRY] };
         fs.writeFileSync(cfg, JSON.stringify(root, null, 2) + '\n');
-      " ENTRY="$ENTRY"
+      "
       echo "✓ Registered with Claude Code (~/.claude.json)"
       ;;
     opencode)
-      node -e "
+      ENTRY="$ENTRY" node -e "
         const fs = require('fs');
         const cfg = require('os').homedir() + '/.config/opencode/opencode.json';
         if (!fs.existsSync(require('path').dirname(cfg))) {
@@ -112,7 +112,7 @@ for provider in "${DETECTED[@]}"; do
         root.mcp = root.mcp || {};
         root.mcp.pillbox = { type: 'local', command: ['node', process.env.ENTRY], enabled: true };
         fs.writeFileSync(cfg, JSON.stringify(root, null, 2) + '\n');
-      " ENTRY="$ENTRY"
+      "
       echo "✓ Registered with OpenCode (~/.config/opencode/opencode.json)"
       ;;
   esac
