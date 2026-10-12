@@ -88,31 +88,16 @@ fi
 
 ENTRY="$DEST/index.js"
 
+REGISTER="$SCRIPT_DIR/scripts/register-mcp.mjs"
+
 for provider in "${DETECTED[@]}"; do
   case "$provider" in
     claude-code)
-      ENTRY="$ENTRY" node -e "
-        const fs = require('fs');
-        const cfg = require('os').homedir() + '/.claude.json';
-        const root = fs.existsSync(cfg) ? JSON.parse(fs.readFileSync(cfg, 'utf8')) : {};
-        root.mcpServers = root.mcpServers || {};
-        root.mcpServers.pillbox = { command: 'node', args: [process.env.ENTRY] };
-        fs.writeFileSync(cfg, JSON.stringify(root, null, 2) + '\n');
-      "
+      node "$REGISTER" claude-code "$ENTRY" >/dev/null
       echo "✓ Registered with Claude Code (~/.claude.json)"
       ;;
     opencode)
-      ENTRY="$ENTRY" node -e "
-        const fs = require('fs');
-        const cfg = require('os').homedir() + '/.config/opencode/opencode.json';
-        if (!fs.existsSync(require('path').dirname(cfg))) {
-          fs.mkdirSync(require('path').dirname(cfg), { recursive: true });
-        }
-        const root = fs.existsSync(cfg) ? JSON.parse(fs.readFileSync(cfg, 'utf8')) : {};
-        root.mcp = root.mcp || {};
-        root.mcp.pillbox = { type: 'local', command: ['node', process.env.ENTRY], enabled: true };
-        fs.writeFileSync(cfg, JSON.stringify(root, null, 2) + '\n');
-      "
+      node "$REGISTER" opencode "$ENTRY" >/dev/null
       echo "✓ Registered with OpenCode (~/.config/opencode/opencode.json)"
       ;;
   esac

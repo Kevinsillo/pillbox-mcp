@@ -97,33 +97,13 @@ foreach ($Provider in $Detected) {
     switch ($Provider) {
         "claude-code" {
             $Cfg = Join-Path $HOME ".claude.json"
-            $script = @"
-const fs = require('fs');
-const cfg = '$($Cfg.Replace('\','\\'))';
-const root = fs.existsSync(cfg) ? JSON.parse(fs.readFileSync(cfg, 'utf8')) : {};
-root.mcpServers = root.mcpServers || {};
-root.mcpServers.pillbox = { command: 'node', args: ['$($Entry.Replace('\','\\'))'] };
-fs.writeFileSync(cfg, JSON.stringify(root, null, 2) + '\n');
-"@
-            node -e $script
+            node "$ScriptDir\scripts\register-mcp.mjs" claude-code $Entry
             if ($LASTEXITCODE -ne 0) { throw "Failed to register with Claude Code." }
             Write-Host "OK Registered with Claude Code ($Cfg)" -ForegroundColor Green
         }
         "opencode" {
             $Cfg = Join-Path $HOME ".config\opencode\opencode.json"
-            $CfgDir = Split-Path $Cfg -Parent
-            $script = @"
-const fs = require('fs');
-const cfg = '$($Cfg.Replace('\','\\'))';
-if (!fs.existsSync('$($CfgDir.Replace('\','\\'))')) {
-  fs.mkdirSync('$($CfgDir.Replace('\','\\'))', { recursive: true });
-}
-const root = fs.existsSync(cfg) ? JSON.parse(fs.readFileSync(cfg, 'utf8')) : {};
-root.mcp = root.mcp || {};
-root.mcp.pillbox = { type: 'local', command: ['node', '$($Entry.Replace('\','\\'))'], enabled: true };
-fs.writeFileSync(cfg, JSON.stringify(root, null, 2) + '\n');
-"@
-            node -e $script
+            node "$ScriptDir\scripts\register-mcp.mjs" opencode $Entry
             if ($LASTEXITCODE -ne 0) { throw "Failed to register with OpenCode." }
             Write-Host "OK Registered with OpenCode ($Cfg)" -ForegroundColor Green
         }
